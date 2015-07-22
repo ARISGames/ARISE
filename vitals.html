@@ -4,7 +4,38 @@
 <title>Vitals</title>
 <script type="text/javascript">
 
-document.write('');
+var item_id_to_give = 42;
+
+var ARIS = {};
+
+function getFloat(id) {
+  return parseFloat( document.getElementById(id).value );
+}
+
+function appReady() {
+  document.getElementById('button-submit').onclick = function(){
+    var pulse       = getFloat('field-pulse');
+    var resp_rate   = getFloat('field-respiratory-rate');
+    var blood_num   = getFloat('field-blood-pressure-numerator');
+    var blood_denom = getFloat('field-blood-pressure-denominator');
+    var temp        = getFloat('field-temperature');
+    var oxygen      = getFloat('field-oxygen');
+
+    var good = true;
+    if (good) {
+      ARIS.givePlayerItemCount(item_id_to_give, 1);
+    }
+  };
+}
+
+// hack to wait for both aris and the dom
+var locks = 2;
+function unlock() {
+  locks--;
+  if (locks == 0) appReady();
+}
+ARIS.ready = unlock;
+document.addEventListener('DOMContentLoaded', unlock);
 
 </script>
 <style type="text/css">
@@ -13,6 +44,13 @@ body {
   background-color: #335;
   color: white;
   font-family: sans-serif;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 input[type=number] {
@@ -26,31 +64,31 @@ input[type=number] {
 <form>
   <p>
     <label>
-      Pulse: <input type="number"> bpm
+      Pulse: <input id="field-pulse" type="number"> bpm
     </label>
   </p>
   <p>
     <label>
-      Resp. rate: <input type="number"> / min
+      Resp. rate: <input id="field-respiratory-rate" type="number"> / min
     </label>
   </p>
   <p>
     <label>
-      Blood pressure: <input type="number"> / <input type="number">
+      Blood pressure: <input id="field-blood-pressure-numerator" type="number"> / <input id="field-blood-pressure-denominator" type="number">
     </label>
   </p>
   <p>
     <label>
-      Temperature: <input type="number"> &deg; C
+      Temperature: <input id="field-temperature" type="number"> &deg; C
     </label>
   </p>
   <p>
     <label>
-      O<sup>2</sup>: <input type="number"> %
+      O<sup>2</sup>: <input id="field-oxygen" type="number"> %
     </label>
   </p>
   <p>
-    <button type="button">Submit</button>
+    <button id="button-submit" type="button">Submit</button>
   </p>
 </form>
 
