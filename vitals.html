@@ -4,26 +4,56 @@
 <title>Vitals</title>
 <script type="text/javascript">
 
+/* parameters that should be changed */
+
 var item_id_to_give = 42;
+
+var min_pulse = 50;
+var max_pulse = 100;
+
+var min_resp_rate = 50;
+var max_resp_rate = 100;
+
+var min_blood_top = 50;
+var max_blood_top = 100;
+
+var min_blood_bottom = 50;
+var max_blood_bottom = 100;
+
+var min_temp = 50;
+var max_temp = 100;
+
+var min_oxygen = 50;
+var max_oxygen = 100;
+
+var message_success = "You did it!";
+var message_failure = "Try again.";
+
+/* end of parameters */
 
 var ARIS = {};
 
-function getFloat(id) {
-  return parseFloat( document.getElementById(id).value );
+function checkFloat(id, min, max) {
+  var response = parseFloat( document.getElementById(id).value );
+  return min <= response && response <= max;
 }
 
 function appReady() {
   document.getElementById('button-submit').onclick = function(){
-    var pulse       = getFloat('field-pulse');
-    var resp_rate   = getFloat('field-respiratory-rate');
-    var blood_num   = getFloat('field-blood-pressure-numerator');
-    var blood_denom = getFloat('field-blood-pressure-denominator');
-    var temp        = getFloat('field-temperature');
-    var oxygen      = getFloat('field-oxygen');
+    var passed = true;
+    passed = passed && checkFloat('field-pulse'                , min_pulse       , max_pulse       );
+    passed = passed && checkFloat('field-respiratory-rate'     , min_resp_rate   , max_resp_rate   );
+    passed = passed && checkFloat('field-blood-pressure-top'   , min_blood_top   , max_blood_top   );
+    passed = passed && checkFloat('field-blood-pressure-bottom', min_blood_bottom, max_blood_bottom);
+    passed = passed && checkFloat('field-temperature'          , min_temp        , max_temp        );
+    passed = passed && checkFloat('field-oxygen'               , min_oxygen      , max_oxygen      );
 
-    var good = true;
-    if (good) {
+    if (passed) {
       ARIS.givePlayerItemCount(item_id_to_give, 1);
+      alert(message_success);
+      ARIS.exit();
+    } else {
+      alert(message_failure);
     }
   };
 }
@@ -64,27 +94,27 @@ input[type=number] {
 <form>
   <p>
     <label>
-      Pulse: <input id="field-pulse" type="number"> bpm
+      Pulse: <input id="field-pulse" type="number" value="0"> bpm
     </label>
   </p>
   <p>
     <label>
-      Resp. rate: <input id="field-respiratory-rate" type="number"> / min
+      Resp. rate: <input id="field-respiratory-rate" type="number" value="0"> / min
     </label>
   </p>
   <p>
     <label>
-      Blood pressure: <input id="field-blood-pressure-numerator" type="number"> / <input id="field-blood-pressure-denominator" type="number">
+      Blood pressure: <input id="field-blood-pressure-top" type="number" value="0"> / <input id="field-blood-pressure-bottom" type="number" value="0">
     </label>
   </p>
   <p>
     <label>
-      Temperature: <input id="field-temperature" type="number"> &deg; C
+      Temperature: <input id="field-temperature" type="number" value="0"> &deg; C
     </label>
   </p>
   <p>
     <label>
-      O<sup>2</sup>: <input id="field-oxygen" type="number"> %
+      O<sup>2</sup>: <input id="field-oxygen" type="number" value="0"> %
     </label>
   </p>
   <p>
