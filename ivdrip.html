@@ -1,8 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <title>IV Machine</title>
 <script type="text/javascript">
+
+var drug_name = "Morphine";
+var drug_amount = 10;
+var drug_rate = 20;
+var drug_time = 30;
+
+/* end of parameters */
+
+var ARIS = {};
+
+var entered_amount = "";
+var entered_rate = "";
+var entered_time = "";
+var editing = null;
+
+function redisplay() {
+  document.getElementById('display-amount').innerHTML =
+    (editing == 'amount' ? entered_amount + '&#9632;' :
+    entered_amount == '' ? '???' :
+    entered_amount
+    ) + ' ml' ;
+  document.getElementById('display-rate').innerHTML =
+    (editing == 'rate' ? entered_rate + '&#9632;' :
+    entered_rate == '' ? '???' :
+    entered_rate
+    ) + ' ml/hr' ;
+  document.getElementById('display-time').innerHTML =
+    (editing == 'time' ? entered_time + '&#9632;' :
+    entered_time == '' ? '???' :
+    entered_time
+    ) + ' hrs' ;
+}
+
+function appReady() {
+  document.getElementById('display-drug').innerHTML = drug_name;
+  document.getElementById('button-amount').onclick = function(){
+    editing = 'amount';
+    redisplay();
+  };
+  document.getElementById('button-rate').onclick = function(){
+    editing = 'rate';
+    redisplay();
+  };
+  document.getElementById('button-time').onclick = function(){
+    editing = 'time';
+    redisplay();
+  };
+}
+
+// hack to wait for both aris and the dom
+var locks = 2;
+function unlock() {
+  locks--;
+  if (locks == 0) appReady();
+}
+ARIS.ready = unlock;
+document.addEventListener('DOMContentLoaded', unlock);
+
+// debugging
+ARIS.ready();
 
 </script>
 <style type="text/css">
@@ -35,55 +96,55 @@ body {
 <table>
   <tr>
     <td></td>
-    <td class="display" colspan="4">
-      Morphine
+    <td id="display-drug" class="display" colspan="4">
+      ???
     </td>
   </tr>
   <tr>
-    <td><button type="button">&gt;</button></td>
-    <td class="display" colspan="4">
+    <td><button id="button-amount" type="button">&gt;</button></td>
+    <td id="display-amount" class="display" colspan="4">
       ??? ml
     </td>
   </tr>
   <tr>
-    <td><button type="button">&gt;</button></td>
-    <td class="display" colspan="4">
+    <td><button id="button-rate" type="button">&gt;</button></td>
+    <td id="display-rate" class="display" colspan="4">
       ??? ml/hr
     </td>
   </tr>
   <tr>
-    <td><button type="button">&gt;</button></td>
-    <td class="display" colspan="4">
+    <td><button id="button-time" type="button">&gt;</button></td>
+    <td id="display-time" class="display" colspan="4">
       ??? hrs
     </td>
   </tr>
   <tr>
     <td></td>
-    <td><button type="button">1</button></td>
-    <td><button type="button">2</button></td>
-    <td><button type="button">3</button></td>
-    <td><button type="button">^</button></td>
+    <td><button id="button-1" type="button">1</button></td>
+    <td><button id="button-2" type="button">2</button></td>
+    <td><button id="button-3" type="button">3</button></td>
+    <td><button id="button-up" type="button">^</button></td>
   </tr>
   <tr>
     <td></td>
-    <td><button type="button">4</button></td>
-    <td><button type="button">5</button></td>
-    <td><button type="button">6</button></td>
-    <td><button type="button">v</button></td>
+    <td><button id="button-4" type="button">4</button></td>
+    <td><button id="button-5" type="button">5</button></td>
+    <td><button id="button-6" type="button">6</button></td>
+    <td><button id="button-down" type="button">v</button></td>
   </tr>
   <tr>
     <td></td>
-    <td><button type="button">7</button></td>
-    <td><button type="button">8</button></td>
-    <td><button type="button">9</button></td>
-    <td><button type="button">ENTER</button></td>
+    <td><button id="button-7" type="button">7</button></td>
+    <td><button id="button-8" type="button">8</button></td>
+    <td><button id="button-9" type="button">9</button></td>
+    <td><button id="button-enter" type="button">ENTER</button></td>
   </tr>
   <tr>
     <td></td>
-    <td><button type="button">CLEAR</button></td>
-    <td><button type="button">0</button></td>
-    <td><button type="button">.</button></td>
-    <td><button type="button">CANCEL</button></td>
+    <td><button id="button-clear" type="button">CLEAR</button></td>
+    <td><button id="button-0" type="button">0</button></td>
+    <td><button id="button-dot" type="button">.</button></td>
+    <td><button id="button-cancel" type="button">CANCEL</button></td>
   </tr>
 </table>
 
