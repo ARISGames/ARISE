@@ -25,6 +25,10 @@ var entered_time = "";
 var editing = null;
 var previous_value = "";
 
+function float_equal(a, b) {
+  return Math.abs(a - b) < 0.0001;
+}
+
 function now_editing(thing) {
   editing = thing;
   redisplay();
@@ -35,9 +39,9 @@ function now_editing(thing) {
   }
 
   passed = true;
-  passed = passed && drug_amount == parseFloat(entered_amount);
-  passed = passed && drug_rate   == parseFloat(entered_rate  );
-  passed = passed && drug_time   == parseFloat(entered_time  );
+  passed = passed && float_equal(drug_amount, parseFloat(entered_amount));
+  passed = passed && float_equal(drug_rate  , parseFloat(entered_rate  ));
+  passed = passed && float_equal(drug_time  , parseFloat(entered_time  ));
   if (passed) {
     ARIS.givePlayerItemCount(item_id_to_give, 1);
     alert(message_success);
