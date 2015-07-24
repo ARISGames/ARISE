@@ -2,7 +2,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <title>IV Machine</title>
+<script type="text/javascript" src="fastclick.js"></script>
 <script type="text/javascript">
 
 /* parameters that should be changed */
@@ -94,6 +97,7 @@ function type(str) {
 }
 
 function appReady() {
+  FastClick.attach(document.body);
   gameDraw();
   document.getElementById('button-line-2').onclick = function(){
     switch (game_screen) {
@@ -222,14 +226,31 @@ ARIS.ready = unlock;
 document.addEventListener('DOMContentLoaded', unlock);
 
 // for debugging
+// ARIS.givePlayerItemCount = ARIS.exit = function(){};
 // ARIS.ready();
 
 </script>
 <style type="text/css">
 
-td button {
-  width: 6em;
-  height: 2em;
+table {
+  position: fixed;
+  width: 98%;
+  height: 98%;
+}
+
+tr {
+  height: 12%;
+}
+
+td {
+  width: 20%;
+}
+
+button {
+  width: 100%;
+  height: 100%;
+  font-weight: bold;
+  font-size: 100%;
 }
 
 .display {
@@ -237,6 +258,7 @@ td button {
   font-family: monospace;
   height: 2em;
   font-weight: bold;
+  font-size: 125%;
 }
 
 body {

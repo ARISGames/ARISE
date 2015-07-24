@@ -2,7 +2,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <title>Vitals</title>
+<script type="text/javascript" src="fastclick.js"></script>
 <script type="text/javascript">
 
 /* parameters that should be changed */
@@ -40,6 +43,7 @@ function checkFloat(id, min, max) {
 }
 
 function appReady() {
+  FastClick.attach(document.body);
   document.getElementById('button-submit').onclick = function(){
     var passed = true;
     passed = passed && checkFloat('field-pulse'                , min_pulse       , max_pulse       );
@@ -67,6 +71,10 @@ function unlock() {
 }
 ARIS.ready = unlock;
 document.addEventListener('DOMContentLoaded', unlock);
+
+// for debugging
+// ARIS.givePlayerItemCount = ARIS.exit = function(){};
+// ARIS.ready();
 
 </script>
 <style type="text/css">
