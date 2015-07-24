@@ -9,85 +9,144 @@
 
 var drug_name = "Morphine";
 var drug_amount = 10;
-var drug_rate = 20;
-var drug_time = 30;
+var drug_how_often = 20;
+var drug_how_long = 30;
 
 var item_id_to_give = 42;
 var message_success = "You did it!";
+var message_failure = "Try again.";
 
 /* end of parameters */
 
 var ARIS = {};
 
-var entered_amount = "";
-var entered_rate = "";
-var entered_time = "";
-var editing = null;
-var previous_value = "";
+var game_screen = 'main';
+var entered_amount = 0;
+var entered_how_often = 0;
+var entered_how_long = 0;
+var current_value = '';
 
 function float_equal(a, b) {
   return Math.abs(a - b) < 0.0001;
 }
 
-function now_editing(thing) {
-  editing = thing;
-  redisplay();
-  switch (editing) {
-    case 'amount': previous_value = entered_amount; break;
-    case 'rate'  : previous_value = entered_rate  ; break;
-    case 'time'  : previous_value = entered_time  ; break;
+function gameDraw() {
+  switch (game_screen) {
+    case 'main':
+      document.getElementById('display-1').innerHTML = drug_name;
+      document.getElementById('display-2').innerHTML =
+        ( entered_amount
+        + ' mg every '
+        + entered_how_often
+        + ' mins, for '
+        + entered_how_long
+        + ' hrs'
+        );
+      document.getElementById('display-3').innerHTML = '';
+      document.getElementById('display-4').innerHTML = '';
+      break;
+    case 'editing':
+      document.getElementById('display-1').innerHTML = 'Edit mode';
+      document.getElementById('display-2').innerHTML = 'Amount: ' + entered_amount + ' mg';
+      document.getElementById('display-3').innerHTML = 'How often: ' + entered_how_often + ' mins';
+      document.getElementById('display-4').innerHTML = 'How long: ' + entered_how_long + ' hrs';
+      break;
+    case 'editing_amount':
+      document.getElementById('display-1').innerHTML = 'Editing amount';
+      document.getElementById('display-2').innerHTML = current_value + '&#9632; mg';
+      document.getElementById('display-3').innerHTML = '';
+      document.getElementById('display-4').innerHTML = '';
+      break;
+    case 'editing_how_often':
+      document.getElementById('display-1').innerHTML = 'Editing how often';
+      document.getElementById('display-2').innerHTML = current_value + '&#9632; mins';
+      document.getElementById('display-3').innerHTML = '';
+      document.getElementById('display-4').innerHTML = '';
+      break;
+    case 'editing_how_long':
+      document.getElementById('display-1').innerHTML = 'Editing how long';
+      document.getElementById('display-2').innerHTML = current_value + '&#9632; hrs';
+      document.getElementById('display-3').innerHTML = '';
+      document.getElementById('display-4').innerHTML = '';
+      break;
   }
+}
 
+function check() {
   passed = true;
-  passed = passed && float_equal(drug_amount, parseFloat(entered_amount));
-  passed = passed && float_equal(drug_rate  , parseFloat(entered_rate  ));
-  passed = passed && float_equal(drug_time  , parseFloat(entered_time  ));
+  passed = passed && float_equal(drug_amount   , entered_amount   );
+  passed = passed && float_equal(drug_how_often, entered_how_often);
+  passed = passed && float_equal(drug_how_long , entered_how_long );
   if (passed) {
     ARIS.givePlayerItemCount(item_id_to_give, 1);
     alert(message_success);
     ARIS.exit();
+  } else {
+    alert(message_failure);
   }
-}
-
-function redisplay() {
-  document.getElementById('display-amount').innerHTML =
-    (editing == 'amount' ? entered_amount + '&#9632;' :
-    entered_amount == '' ? '???' :
-    entered_amount
-    ) + ' ml' ;
-  document.getElementById('display-rate').innerHTML =
-    (editing == 'rate' ? entered_rate + '&#9632;' :
-    entered_rate == '' ? '???' :
-    entered_rate
-    ) + ' ml/hr' ;
-  document.getElementById('display-time').innerHTML =
-    (editing == 'time' ? entered_time + '&#9632;' :
-    entered_time == '' ? '???' :
-    entered_time
-    ) + ' hrs' ;
 }
 
 function type(str) {
-  return function() {
-    switch (editing) {
-      case 'amount': entered_amount += str; break;
-      case 'rate'  : entered_rate   += str; break;
-      case 'time'  : entered_time   += str; break;
-    }
-    redisplay();
-  }
-};
+  return function(){
+    current_value += str;
+    gameDraw();
+  };
+}
 
 function appReady() {
-  document.getElementById('display-drug').innerHTML = drug_name;
-  document.getElementById('button-amount').onclick = function(){
-    now_editing('amount');
+  gameDraw();
+  document.getElementById('button-line-2').onclick = function(){
+    switch (game_screen) {
+      case 'main':
+        game_screen = 'editing';
+        gameDraw();
+        break;
+      case 'editing':
+        game_screen = 'editing_amount';
+        current_value = '';
+        gameDraw();
+        break;
+      case 'editing_amount':
+        break;
+      case 'editing_how_often':
+        break;
+      case 'editing_how_long':
+        break;
+    }
   };
-  document.getElementById('button-rate').onclick = function(){
-    now_editing('rate');
+  document.getElementById('button-line-3').onclick = function(){
+    switch (game_screen) {
+      case 'main':
+        break;
+      case 'editing':
+        game_screen = 'editing_how_often';
+        current_value = '';
+        gameDraw();
+        break;
+      case 'editing_amount':
+        break;
+      case 'editing_how_often':
+        break;
+      case 'editing_how_long':
+        break;
+    }
   };
-  document.getElementById('button-time').onclick = function(){
-    now_editing('time');
+  document.getElementById('button-line-4').onclick = function(){
+    switch (game_screen) {
+      case 'main':
+        break;
+      case 'editing':
+        game_screen = 'editing_how_long';
+        current_value = '';
+        gameDraw();
+        break;
+      case 'editing_amount':
+        break;
+      case 'editing_how_often':
+        break;
+      case 'editing_how_long':
+        break;
+    }
   };
   document.getElementById('button-0').onclick = type('0');
   document.getElementById('button-1').onclick = type('1');
@@ -100,39 +159,57 @@ function appReady() {
   document.getElementById('button-8').onclick = type('8');
   document.getElementById('button-9').onclick = type('9');
   document.getElementById('button-dot').onclick = type('.');
-  document.getElementById('button-clear').onclick = function(){
-    switch (editing) {
-      case 'amount': entered_amount = ''; break;
-      case 'rate'  : entered_rate   = ''; break;
-      case 'time'  : entered_time   = ''; break;
-    }
-    redisplay();
-  };
-  document.getElementById('button-up').onclick = function(){
-    switch (editing) {
-      case 'amount':                        break;
-      case 'rate'  : now_editing('amount'); break;
-      case 'time'  : now_editing('rate'  ); break;
-    }
-  };
-  document.getElementById('button-down').onclick = function(){
-    switch (editing) {
-      case 'amount': now_editing('rate'); break;
-      case 'rate'  : now_editing('time'); break;
-      case 'time'  :                      break;
-    }
-  };
   document.getElementById('button-enter').onclick = function(){
-    now_editing(null);
+    switch (game_screen) {
+      case 'main':
+        break;
+      case 'editing':
+        game_screen = 'main';
+        gameDraw();
+        check();
+        break;
+      case 'editing_amount':
+        entered_amount = parseFloat(current_value);
+        game_screen = 'editing';
+        gameDraw();
+        break;
+      case 'editing_how_often':
+        entered_how_often = parseFloat(current_value);
+        game_screen = 'editing';
+        gameDraw();
+        break;
+      case 'editing_how_long':
+        entered_how_long = parseFloat(current_value);
+        game_screen = 'editing';
+        gameDraw();
+        break;
+    }
+  }
+  document.getElementById('button-clear').onclick = function(){
+    current_value = '';
+    gameDraw();
   };
   document.getElementById('button-cancel').onclick = function(){
-    switch (editing) {
-      case 'amount': entered_amount = previous_value; break;
-      case 'rate'  : entered_rate   = previous_value; break;
-      case 'time'  : entered_time   = previous_value; break;
+    switch (game_screen) {
+      case 'main':
+        break;
+      case 'editing':
+        // could go back to main without editing, but not useful
+        break;
+      case 'editing_amount':
+        game_screen = 'editing';
+        gameDraw();
+        break;
+      case 'editing_how_often':
+        game_screen = 'editing';
+        gameDraw();
+        break;
+      case 'editing_how_long':
+        game_screen = 'editing';
+        gameDraw();
+        break;
     }
-    now_editing(null);
-  };
+  }
 }
 
 // hack to wait for both aris and the dom
@@ -143,6 +220,9 @@ function unlock() {
 }
 ARIS.ready = unlock;
 document.addEventListener('DOMContentLoaded', unlock);
+
+// for debugging
+// ARIS.ready();
 
 </script>
 <style type="text/css">
@@ -174,27 +254,23 @@ body {
 
 <table>
   <tr>
-    <td></td>
-    <td id="display-drug" class="display" colspan="4">
-      ???
+    <td><button id="button-line-1" type="button">&gt;</button></td>
+    <td id="display-1" class="display" colspan="4">
     </td>
   </tr>
   <tr>
-    <td><button id="button-amount" type="button">&gt;</button></td>
-    <td id="display-amount" class="display" colspan="4">
-      ??? ml
+    <td><button id="button-line-2" type="button">&gt;</button></td>
+    <td id="display-2" class="display" colspan="4">
     </td>
   </tr>
   <tr>
-    <td><button id="button-rate" type="button">&gt;</button></td>
-    <td id="display-rate" class="display" colspan="4">
-      ??? ml/hr
+    <td><button id="button-line-3" type="button">&gt;</button></td>
+    <td id="display-3" class="display" colspan="4">
     </td>
   </tr>
   <tr>
-    <td><button id="button-time" type="button">&gt;</button></td>
-    <td id="display-time" class="display" colspan="4">
-      ??? hrs
+    <td><button id="button-line-4" type="button">&gt;</button></td>
+    <td id="display-4" class="display" colspan="4">
     </td>
   </tr>
   <tr>
