@@ -6,7 +6,7 @@ This includes the expected numbers that should be entered,
 the name of a drug for the IV machine, messages to show the player,
 and the ARIS item ID to give to the player when they submit a correct answer.
 
-3. Place the `.html` file, as well as `fastclick.js`, on a web server.
+3. Place the `.html` file on a web server.
 
 4. In ARIS, place "web page" objects into a game, either as tabs or as objects
 on the map. The URL should be wherever you put the `.html` file in step 3.
