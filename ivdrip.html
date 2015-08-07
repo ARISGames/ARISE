@@ -9,10 +9,10 @@
 
 /* parameters that should be changed */
 
-var drug_name = "Morphine";
-var drug_amount = 10;
-var drug_how_often = 20;
-var drug_how_long = 30;
+var drug_name     = "Morphine";
+var drug_rate     = 10;
+var drug_vtbi     = 20;
+var drug_duration = 30;
 
 var item_id_to_give = 42;
 var message_success = "You did it!";
@@ -22,10 +22,10 @@ var message_failure = "Try again.";
 
 var ARIS = {};
 
-var game_screen = 'main';
-var entered_amount = 0;
-var entered_how_often = 0;
-var entered_how_long = 0;
+var game_screen = 'stopped';
+var entered_rate = 0;
+var entered_vtbi = 0;
+var entered_duration = 0;
 var current_value = '';
 
 function float_equal(a, b) {
@@ -33,52 +33,33 @@ function float_equal(a, b) {
 }
 
 function gameDraw() {
-  switch (game_screen) {
-    case 'main':
-      document.getElementById('display-1').innerHTML = drug_name;
-      document.getElementById('display-2').innerHTML =
-        ( entered_amount
-        + ' mg every '
-        + entered_how_often
-        + ' mins, for '
-        + entered_how_long
-        + ' hrs'
-        );
-      document.getElementById('display-3').innerHTML = '';
-      document.getElementById('display-4').innerHTML = '';
-      break;
-    case 'editing':
-      document.getElementById('display-1').innerHTML = 'Edit mode';
-      document.getElementById('display-2').innerHTML = 'Amount: ' + entered_amount + ' mg';
-      document.getElementById('display-3').innerHTML = 'How often: ' + entered_how_often + ' mins';
-      document.getElementById('display-4').innerHTML = 'How long: ' + entered_how_long + ' hrs';
-      break;
-    case 'editing_amount':
-      document.getElementById('display-1').innerHTML = 'Editing amount';
-      document.getElementById('display-2').innerHTML = current_value + '&#9632; mg';
-      document.getElementById('display-3').innerHTML = '';
-      document.getElementById('display-4').innerHTML = '';
-      break;
-    case 'editing_how_often':
-      document.getElementById('display-1').innerHTML = 'Editing how often';
-      document.getElementById('display-2').innerHTML = current_value + '&#9632; mins';
-      document.getElementById('display-3').innerHTML = '';
-      document.getElementById('display-4').innerHTML = '';
-      break;
-    case 'editing_how_long':
-      document.getElementById('display-1').innerHTML = 'Editing how long';
-      document.getElementById('display-2').innerHTML = current_value + '&#9632; hrs';
-      document.getElementById('display-3').innerHTML = '';
-      document.getElementById('display-4').innerHTML = '';
-      break;
+  if (game_screen === 'started') {
+    document.getElementById('display-1').innerHTML = drug_name + ' (started)';
+  } else {
+    document.getElementById('display-1').innerHTML = drug_name + ' (stopped)';
+  }
+  if (game_screen === 'editing_rate') {
+    document.getElementById('display-2').innerHTML = current_value + '&#9632; ml/hr';
+  } else {
+    document.getElementById('display-2').innerHTML = entered_rate + ' ml/hr';
+  }
+  if (game_screen === 'editing_vtbi') {
+    document.getElementById('display-3').innerHTML = current_value + '&#9632; ml';
+  } else {
+    document.getElementById('display-3').innerHTML = entered_vtbi + ' ml';
+  }
+  if (game_screen === 'editing_duration') {
+    document.getElementById('display-4').innerHTML = current_value + '&#9632; mins';
+  } else {
+    document.getElementById('display-4').innerHTML = entered_duration + ' mins';
   }
 }
 
 function check() {
   passed = true;
-  passed = passed && float_equal(drug_amount   , entered_amount   );
-  passed = passed && float_equal(drug_how_often, entered_how_often);
-  passed = passed && float_equal(drug_how_long , entered_how_long );
+  passed = passed && float_equal(drug_rate    , entered_rate    );
+  passed = passed && float_equal(drug_vtbi    , entered_vtbi    );
+  passed = passed && float_equal(drug_duration, entered_duration);
   if (passed) {
     ARIS.givePlayerItemCount(item_id_to_give, 1);
     alert(message_success);
@@ -95,61 +76,44 @@ function type(str) {
   };
 }
 
+function stopEditing() {
+  switch (game_screen) {
+    case 'editing_rate':
+      entered_rate = parseFloat(current_value) || 0;
+      game_screen = 'stopped';
+      break;
+    case 'editing_vtbi':
+      entered_vtbi = parseFloat(current_value) || 0;
+      game_screen = 'stopped';
+      break;
+    case 'editing_duration':
+      entered_duration = parseFloat(current_value) || 0;
+      game_screen = 'stopped';
+      break;
+  }
+  gameDraw();
+}
+
 function appReady() {
   FastClick.attach(document.body);
   gameDraw();
-  document.getElementById('button-line-2').onclick = function(){
-    switch (game_screen) {
-      case 'main':
-        game_screen = 'editing';
-        gameDraw();
-        break;
-      case 'editing':
-        game_screen = 'editing_amount';
-        current_value = '';
-        gameDraw();
-        break;
-      case 'editing_amount':
-        break;
-      case 'editing_how_often':
-        break;
-      case 'editing_how_long':
-        break;
-    }
+  document.getElementById('button-line-rate').onclick = function(){
+    stopEditing();
+    current_value = entered_rate === 0 ? '' : '' + entered_rate;
+    game_screen = 'editing_rate';
+    gameDraw();
   };
-  document.getElementById('button-line-3').onclick = function(){
-    switch (game_screen) {
-      case 'main':
-        break;
-      case 'editing':
-        game_screen = 'editing_how_often';
-        current_value = '';
-        gameDraw();
-        break;
-      case 'editing_amount':
-        break;
-      case 'editing_how_often':
-        break;
-      case 'editing_how_long':
-        break;
-    }
+  document.getElementById('button-line-vtbi').onclick = function(){
+    stopEditing();
+    current_value = entered_vtbi === 0 ? '' : '' + entered_vtbi;
+    game_screen = 'editing_vtbi';
+    gameDraw();
   };
-  document.getElementById('button-line-4').onclick = function(){
-    switch (game_screen) {
-      case 'main':
-        break;
-      case 'editing':
-        game_screen = 'editing_how_long';
-        current_value = '';
-        gameDraw();
-        break;
-      case 'editing_amount':
-        break;
-      case 'editing_how_often':
-        break;
-      case 'editing_how_long':
-        break;
-    }
+  document.getElementById('button-line-duration').onclick = function(){
+    stopEditing();
+    current_value = entered_duration === 0 ? '' : '' + entered_duration;
+    game_screen = 'editing_duration';
+    gameDraw();
   };
   document.getElementById('button-0').onclick = type('0');
   document.getElementById('button-1').onclick = type('1');
@@ -163,56 +127,16 @@ function appReady() {
   document.getElementById('button-9').onclick = type('9');
   document.getElementById('button-dot').onclick = type('.');
   document.getElementById('button-enter').onclick = function(){
-    switch (game_screen) {
-      case 'main':
-        break;
-      case 'editing':
-        game_screen = 'main';
-        gameDraw();
-        check();
-        break;
-      case 'editing_amount':
-        entered_amount = parseFloat(current_value);
-        game_screen = 'editing';
-        gameDraw();
-        break;
-      case 'editing_how_often':
-        entered_how_often = parseFloat(current_value);
-        game_screen = 'editing';
-        gameDraw();
-        break;
-      case 'editing_how_long':
-        entered_how_long = parseFloat(current_value);
-        game_screen = 'editing';
-        gameDraw();
-        break;
-    }
+    stopEditing();
   }
   document.getElementById('button-clear').onclick = function(){
     current_value = '';
     gameDraw();
   };
-  document.getElementById('button-cancel').onclick = function(){
-    switch (game_screen) {
-      case 'main':
-        break;
-      case 'editing':
-        // could go back to main without editing, but not useful
-        break;
-      case 'editing_amount':
-        game_screen = 'editing';
-        gameDraw();
-        break;
-      case 'editing_how_often':
-        game_screen = 'editing';
-        gameDraw();
-        break;
-      case 'editing_how_long':
-        game_screen = 'editing';
-        gameDraw();
-        break;
-    }
-  }
+  document.getElementById('button-start').onclick = function(){
+    stopEditing();
+    check();
+  };
 }
 
 // hack to wait for both aris and the dom
@@ -300,22 +224,22 @@ module.exports.FastClick=e):window.FastClick=e})();
 
 <table>
   <tr>
-    <td><button id="button-line-1" type="button">&gt;</button></td>
+    <td></td>
     <td id="display-1" class="display" colspan="4">
     </td>
   </tr>
   <tr>
-    <td><button id="button-line-2" type="button">&gt;</button></td>
+    <td><button id="button-line-rate" type="button">RATE</button></td>
     <td id="display-2" class="display" colspan="4">
     </td>
   </tr>
   <tr>
-    <td><button id="button-line-3" type="button">&gt;</button></td>
+    <td><button id="button-line-vtbi" type="button">VTBI</button></td>
     <td id="display-3" class="display" colspan="4">
     </td>
   </tr>
   <tr>
-    <td><button id="button-line-4" type="button">&gt;</button></td>
+    <td><button id="button-line-duration" type="button">DURATION</button></td>
     <td id="display-4" class="display" colspan="4">
     </td>
   </tr>
@@ -324,28 +248,28 @@ module.exports.FastClick=e):window.FastClick=e})();
     <td><button id="button-1" type="button">1</button></td>
     <td><button id="button-2" type="button">2</button></td>
     <td><button id="button-3" type="button">3</button></td>
-    <td><button id="button-up" type="button">^</button></td>
+    <td><button id="button-start" type="button">START</button></td>
   </tr>
   <tr>
     <td></td>
     <td><button id="button-4" type="button">4</button></td>
     <td><button id="button-5" type="button">5</button></td>
     <td><button id="button-6" type="button">6</button></td>
-    <td><button id="button-down" type="button">v</button></td>
+    <td><button id="button-stop" type="button">STOP</button></td>
   </tr>
   <tr>
     <td></td>
     <td><button id="button-7" type="button">7</button></td>
     <td><button id="button-8" type="button">8</button></td>
     <td><button id="button-9" type="button">9</button></td>
-    <td><button id="button-enter" type="button">ENTER</button></td>
+    <td></td>
   </tr>
   <tr>
     <td></td>
     <td><button id="button-clear" type="button">CLEAR</button></td>
     <td><button id="button-0" type="button">0</button></td>
     <td><button id="button-dot" type="button">.</button></td>
-    <td><button id="button-cancel" type="button">CANCEL</button></td>
+    <td><button id="button-enter" type="button">ENTER</button></td>
   </tr>
 </table>
 
