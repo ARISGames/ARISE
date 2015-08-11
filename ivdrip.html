@@ -33,6 +33,7 @@ function float_equal(a, b) {
 }
 
 function gameDraw() {
+  document.getElementById('success-message').innerHTML = '';
   if (game_screen === 'started') {
     document.getElementById('display-1').innerHTML = drug_name + ' (started)';
   } else {
@@ -61,11 +62,16 @@ function check() {
   passed = passed && float_equal(drug_vtbi    , entered_vtbi    );
   passed = passed && float_equal(drug_duration, entered_duration);
   if (passed) {
+    game_screen = 'started';
+    gameDraw();
     ARIS.givePlayerItemCount(item_id_to_give, 1);
-    alert(message_success);
-    ARIS.exit();
+    document.getElementById('success-message').innerHTML = message_success;
+    document.getElementById('success-ok').innerHTML = 'OK';
+    document.getElementById('button-exit').onclick = function(){
+      ARIS.exit();
+    }
   } else {
-    alert(message_failure);
+    document.getElementById('success-message').innerHTML = message_failure;
   }
 }
 
@@ -96,20 +102,25 @@ function stopEditing() {
 
 function appReady() {
   FastClick.attach(document.body);
+  resize();
+  document.getElementsByTagName('body')[0].onresize = resize;
   gameDraw();
   document.getElementById('button-line-rate').onclick = function(){
+    if (game_screen == 'started') return;
     stopEditing();
     current_value = entered_rate === 0 ? '' : '' + entered_rate;
     game_screen = 'editing_rate';
     gameDraw();
   };
   document.getElementById('button-line-vtbi').onclick = function(){
+    if (game_screen == 'started') return;
     stopEditing();
     current_value = entered_vtbi === 0 ? '' : '' + entered_vtbi;
     game_screen = 'editing_vtbi';
     gameDraw();
   };
   document.getElementById('button-line-duration').onclick = function(){
+    if (game_screen == 'started') return;
     stopEditing();
     current_value = entered_duration === 0 ? '' : '' + entered_duration;
     game_screen = 'editing_duration';
@@ -127,13 +138,16 @@ function appReady() {
   document.getElementById('button-9').onclick = type('9');
   document.getElementById('button-dot').onclick = type('.');
   document.getElementById('button-enter').onclick = function(){
+    if (game_screen == 'started') return;
     stopEditing();
   }
   document.getElementById('button-clear').onclick = function(){
+    if (game_screen == 'started') return;
     current_value = '';
     gameDraw();
   };
   document.getElementById('button-start').onclick = function(){
+    if (game_screen == 'started') return;
     stopEditing();
     check();
   };
@@ -152,40 +166,29 @@ document.addEventListener('DOMContentLoaded', unlock);
 // ARIS.givePlayerItemCount = ARIS.exit = function(){};
 // ARIS.ready();
 
+// the massive hack to dynamically reposition text/buttons on window resize
+function resize() {
+  var screenW = document.getElementById('the-ivdrip').offsetWidth;
+  var screenH = document.getElementById('the-ivdrip').offsetHeight;
+  var imageW = 1346;
+  var imageH = 1815;
+  if (screenW / screenH < imageW / imageH) {
+    // screen is taller than image
+    var realW = screenW;
+    var realH = screenW * (imageH / imageW);
+  } else {
+    // screen is wider than image
+    var realW = screenH * (imageW / imageH);
+    var realH = screenH;
+  }
+  document.getElementById('the-overlay').style.width = realW + 'px';
+  document.getElementById('the-overlay').style.height = realH + 'px';
+  document.getElementById('the-overlay').style.left = ((screenW - realW) / 2) + 'px';
+  document.getElementById('the-overlay').style.top = ((screenH - realH) / 2) + 'px';
+}
+
 </script>
 <style type="text/css">
-
-table {
-  position: fixed;
-  width: 98%;
-  height: 98%;
-}
-
-tr {
-  height: 12%;
-}
-
-td {
-  width: 20%;
-}
-
-button {
-  width: 100%;
-  height: 100%;
-  font-weight: bold;
-  font-size: 100%;
-  background-color: #86163C;
-  color: white;
-}
-
-.display {
-  background-color: white;
-  color: black;
-  font-family: monospace;
-  height: 2em;
-  font-weight: bold;
-  font-size: 125%;
-}
 
 body {
   -webkit-touch-callout: none;
@@ -194,7 +197,295 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  background-color: #579DCE;
+  background-color: #ebe8e7;
+  padding: 0;
+  margin: 0;
+}
+
+#the-ivdrip {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-image: url(ivdrip.jpg);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#the-overlay {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100px;
+  height: 100px;
+}
+
+#button-line-rate {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((197 - 31) / 1346) * 100%);
+  height: calc(((405 - 298) / 1815) * 100%);
+  left: calc((31 / 1346) * 100%);
+  top: calc((298 / 1815) * 100%);
+}
+
+#button-line-vtbi {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((197 - 31) / 1346) * 100%);
+  height: calc(((405 - 298) / 1815) * 100%);
+  left: calc((29 / 1346) * 100%);
+  top: calc((420 / 1815) * 100%);
+}
+
+#button-line-duration {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((197 - 31) / 1346) * 100%);
+  height: calc(((405 - 298) / 1815) * 100%);
+  left: calc((29 / 1346) * 100%);
+  top: calc((541 / 1815) * 100%);
+}
+
+#button-0 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((640 - 471) / 1346) * 100%);
+  height: calc(((1786 - 1677) / 1815) * 100%);
+  left: calc((471 / 1346) * 100%);
+  top: calc((1677 / 1815) * 100%);
+}
+
+#button-8 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((640 - 471) / 1346) * 100%);
+  height: calc(((1786 - 1677) / 1815) * 100%);
+  left: calc((471 / 1346) * 100%);
+  top: calc((1558 / 1815) * 100%);
+}
+
+#button-5 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((640 - 471) / 1346) * 100%);
+  height: calc(((1786 - 1677) / 1815) * 100%);
+  left: calc((471 / 1346) * 100%);
+  top: calc((1438 / 1815) * 100%);
+}
+
+#button-2 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((640 - 471) / 1346) * 100%);
+  height: calc(((1786 - 1677) / 1815) * 100%);
+  left: calc((471 / 1346) * 100%);
+  top: calc((1320 / 1815) * 100%);
+}
+
+#button-clear {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((640 - 471) / 1346) * 100%);
+  height: calc(((1786 - 1677) / 1815) * 100%);
+  left: calc((229 / 1346) * 100%);
+  top: calc((1677 / 1815) * 100%);
+}
+
+#button-7 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((640 - 471) / 1346) * 100%);
+  height: calc(((1786 - 1677) / 1815) * 100%);
+  left: calc((229 / 1346) * 100%);
+  top: calc((1558 / 1815) * 100%);
+}
+
+#button-4 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((640 - 471) / 1346) * 100%);
+  height: calc(((1786 - 1677) / 1815) * 100%);
+  left: calc((229 / 1346) * 100%);
+  top: calc((1438 / 1815) * 100%);
+}
+
+#button-1 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((640 - 471) / 1346) * 100%);
+  height: calc(((1786 - 1677) / 1815) * 100%);
+  left: calc((229 / 1346) * 100%);
+  top: calc((1320 / 1815) * 100%);
+}
+
+#button-dot {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((640 - 471) / 1346) * 100%);
+  height: calc(((1786 - 1677) / 1815) * 100%);
+  left: calc((713 / 1346) * 100%);
+  top: calc((1677 / 1815) * 100%);
+}
+
+#button-9 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((640 - 471) / 1346) * 100%);
+  height: calc(((1786 - 1677) / 1815) * 100%);
+  left: calc((713 / 1346) * 100%);
+  top: calc((1558 / 1815) * 100%);
+}
+
+#button-6 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((640 - 471) / 1346) * 100%);
+  height: calc(((1786 - 1677) / 1815) * 100%);
+  left: calc((713 / 1346) * 100%);
+  top: calc((1438 / 1815) * 100%);
+}
+
+#button-3 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((640 - 471) / 1346) * 100%);
+  height: calc(((1786 - 1677) / 1815) * 100%);
+  left: calc((713 / 1346) * 100%);
+  top: calc((1320 / 1815) * 100%);
+}
+
+#button-start {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((640 - 471) / 1346) * 100%);
+  height: calc(((1786 - 1677) / 1815) * 100%);
+  left: calc((956 / 1346) * 100%);
+  top: calc((1320 / 1815) * 100%);
+}
+
+#button-stop {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((640 - 471) / 1346) * 100%);
+  height: calc(((1786 - 1677) / 1815) * 100%);
+  left: calc((956 / 1346) * 100%);
+  top: calc((1438 / 1815) * 100%);
+}
+
+#button-enter {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((640 - 471) / 1346) * 100%);
+  height: calc(((1786 - 1677) / 1815) * 100%);
+  left: calc((956 / 1346) * 100%);
+  top: calc((1558 / 1815) * 100%);
+}
+
+#button-exit {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((1053 - 953) / 1346) * 100%);
+  height: calc(((1300 - 1205) / 1815) * 100%);
+  left: calc((953 / 1346) * 100%);
+  top: calc((1205 / 1815) * 100%);
+}
+
+#display-1 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  color: #506197;
+  width: calc(((1079 - 270) / 1346) * 100%);
+  height: calc(((270 - 188) / 1815) * 100%);
+  left: calc((270 / 1346) * 100%);
+  top: calc((188 / 1815) * 100%);
+  font-size: 2.5vh;
+  font-family: monospace;
+}
+
+#display-2 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  color: #506197;
+  width: calc(((1079 - 270) / 1346) * 100%);
+  height: calc(((270 - 188) / 1815) * 100%);
+  left: calc((270 / 1346) * 100%);
+  top: calc((314 / 1815) * 100%);
+  font-size: 2.5vh;
+  font-family: monospace;
+}
+
+#display-3 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  color: #506197;
+  width: calc(((1079 - 270) / 1346) * 100%);
+  height: calc(((270 - 188) / 1815) * 100%);
+  left: calc((270 / 1346) * 100%);
+  top: calc((434 / 1815) * 100%);
+  font-size: 2.5vh;
+  font-family: monospace;
+}
+
+#display-4 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  color: #506197;
+  width: calc(((1079 - 270) / 1346) * 100%);
+  height: calc(((270 - 188) / 1815) * 100%);
+  left: calc((270 / 1346) * 100%);
+  top: calc((558 / 1815) * 100%);
+  font-size: 2.5vh;
+  font-family: monospace;
+}
+
+#success-message {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((1068 - 292) / 1346) * 100%);
+  height: calc(((966 - 862) / 1815) * 100%);
+  left: calc((292 / 1346) * 100%);
+  top: calc((862 / 1815) * 100%);
+  font-size: 2.5vh;
+  font-family: monospace;
+  color: #cdd1e7;
+}
+
+#success-ok {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((1080 - 965) / 1346) * 100%);
+  height: calc(((1099 - 1025) / 1815) * 100%);
+  left: calc((965 / 1346) * 100%);
+  top: calc((1025 / 1815) * 100%);
+  font-size: 3vh;
+  font-family: monospace;
+  color: #506197;
 }
 
 </style>
@@ -226,56 +517,35 @@ module.exports.FastClick=e):window.FastClick=e})();
 </head>
 <body>
 
-<table>
-  <tr>
-    <td></td>
-    <td id="display-1" class="display" colspan="4">
-    </td>
-  </tr>
-  <tr>
-    <td><button id="button-line-rate" type="button">RATE</button></td>
-    <td id="display-2" class="display" colspan="4">
-    </td>
-  </tr>
-  <tr>
-    <td><button id="button-line-vtbi" type="button">VTBI</button></td>
-    <td id="display-3" class="display" colspan="4">
-    </td>
-  </tr>
-  <tr>
-    <td><button id="button-line-duration" type="button">DURATION</button></td>
-    <td id="display-4" class="display" colspan="4">
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td><button id="button-1" type="button">1</button></td>
-    <td><button id="button-2" type="button">2</button></td>
-    <td><button id="button-3" type="button">3</button></td>
-    <td><button id="button-start" type="button">START</button></td>
-  </tr>
-  <tr>
-    <td></td>
-    <td><button id="button-4" type="button">4</button></td>
-    <td><button id="button-5" type="button">5</button></td>
-    <td><button id="button-6" type="button">6</button></td>
-    <td><button id="button-stop" type="button">STOP</button></td>
-  </tr>
-  <tr>
-    <td></td>
-    <td><button id="button-7" type="button">7</button></td>
-    <td><button id="button-8" type="button">8</button></td>
-    <td><button id="button-9" type="button">9</button></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td></td>
-    <td><button id="button-clear" type="button">CLEAR</button></td>
-    <td><button id="button-0" type="button">0</button></td>
-    <td><button id="button-dot" type="button">.</button></td>
-    <td><button id="button-enter" type="button">ENTER</button></td>
-  </tr>
-</table>
+<div id="the-ivdrip">
+  <div id="the-overlay">
+    <div id="button-line-rate"></div>
+    <div id="button-line-vtbi"></div>
+    <div id="button-line-duration"></div>
+    <div id="button-0"></div>
+    <div id="button-1"></div>
+    <div id="button-2"></div>
+    <div id="button-3"></div>
+    <div id="button-4"></div>
+    <div id="button-5"></div>
+    <div id="button-6"></div>
+    <div id="button-7"></div>
+    <div id="button-8"></div>
+    <div id="button-9"></div>
+    <div id="button-clear"></div>
+    <div id="button-dot"></div>
+    <div id="button-start"></div>
+    <div id="button-stop"></div>
+    <div id="button-enter"></div>
+    <div id="button-exit"></div>
+    <div id="display-1"></div>
+    <div id="display-2"></div>
+    <div id="display-3"></div>
+    <div id="display-4"></div>
+    <div id="success-message"></div>
+    <div id="success-ok"></div>
+  </div>
+</div>
 
 </body>
 </html>
