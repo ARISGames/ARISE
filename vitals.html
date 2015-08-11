@@ -58,10 +58,17 @@ function appReady() {
 
     if (passed) {
       ARIS.givePlayerItemCount(item_id_to_give, 1);
-      alert(message_success);
-      ARIS.exit();
+      document.getElementById('feedback').innerHTML = message_success;
+      setTimeout(function(){
+        ARIS.exit();
+      }, 1500);
     } else {
-      alert(message_failure);
+      document.getElementById('feedback').innerHTML = message_failure;
+      setTimeout(function(){
+        if (document.getElementById('feedback').innerHTML === message_failure) {
+          document.getElementById('feedback').innerHTML = '';
+        }
+      }, 1500);
     }
   };
 }
@@ -95,8 +102,22 @@ body {
   user-select: none;
 }
 
+table {
+  width: 500px;
+  max-width: 100%;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+td {
+  width: 50%;
+  border: 1px solid black;
+  padding: 3px;
+  background-color: #ccc;
+}
+
 input[type=number] {
-  width: 7em;
+  width: calc(100% - 10px);
   font-size: 15px;
 }
 
@@ -135,40 +156,70 @@ module.exports.FastClick=e):window.FastClick=e})();
 
 <form>
   <p>
-    <label>
-      Pulse: <br> <input id="field-pulse" type="number" value="0"> bpm
-    </label>
+    <table>
+      <tr>
+        <td>Patient Name</td>
+        <td>???</td>
+      </tr>
+      <tr>
+        <td>DOB</td>
+        <td>???</td>
+      </tr>
+      <tr>
+        <td>Physician</td>
+        <td>???</td>
+      </tr>
+    </table>
   </p>
   <p>
-    <label>
-      Resp. rate: <br> <input id="field-respiratory-rate" type="number" value="0"> / min
-    </label>
-  </p>
-  <p>
-    <label>
-      Blood pressure: <br> <input id="field-blood-pressure-top" type="number" value="0">
-    </label>
-    <label>
-      / <input id="field-blood-pressure-bottom" type="number" value="0">
-    </label>
-  </p>
-  <p>
-    <label>
-      Temperature: <br> <input id="field-temperature" type="number" value="0"> &deg; C
-    </label>
-  </p>
-  <p>
-    <label>
-      O<sup>2</sup>: <br> <input id="field-oxygen" type="number" value="0"> %
-    </label>
-  </p>
-  <p>
-    <label>
-      Pain (1-10): <br> <input id="field-pain" type="number" value="1">
-    </label>
+    <table>
+      <tr>
+        <td>Pulse (bpm)</td>
+        <td>
+          <input id="field-pulse" type="number" value="0">
+        </td>
+      </tr>
+      <tr>
+        <td>Resp. Rate (/min)</td>
+        <td>
+          <input id="field-respiratory-rate" type="number" value="0">
+        </td>
+      </tr>
+      <tr>
+        <td>BP Systolic (mmHg)</td>
+        <td>
+          <input id="field-blood-pressure-top" type="number" value="0">
+        </td>
+      </tr>
+      <tr>
+        <td>BP Diatolic (mmHg)</td>
+        <td>
+          <input id="field-blood-pressure-bottom" type="number" value="0">
+        </td>
+      </tr>
+      <tr>
+        <td>Temperature (&deg;C)</td>
+        <td>
+          <input id="field-temperature" type="number" value="0">
+        </td>
+      </tr>
+      <tr>
+        <td>O<sup>2</sup> (%)</td>
+        <td>
+          <input id="field-oxygen" type="number" value="0">
+        </td>
+      </tr>
+      <tr>
+        <td>Pain (1-10)</td>
+        <td>
+          <input id="field-pain" type="number" value="1">
+        </td>
+      </tr>
+    </table>
   </p>
   <p>
     <button id="button-submit" type="button">Submit</button>
+    <span id="feedback"></span>
   </p>
 </form>
 
