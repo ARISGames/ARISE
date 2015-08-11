@@ -77,6 +77,7 @@ function check() {
 
 function type(str) {
   return function(){
+    if (game_screen == 'started') return;
     current_value += str;
     gameDraw();
   };
