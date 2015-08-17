@@ -1,4 +1,4 @@
-1. Place `ivdrip.html` or `vitals.html` on a web server.
+1. Place `ivdrip.html` (plus `ivdrip.jpg`) or `vitals.html` on a web server.
 
 2. In ARIS, place a "web page" object into a game, either as a tab or as an
 object on the map.
