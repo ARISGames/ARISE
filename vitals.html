@@ -7,33 +7,44 @@
 <title>Vitals</title>
 <script type="text/javascript">
 
+function lookupGET(val) {
+    var result = null,
+        tmp = [];
+    var items = location.search.substr(1).split("&");
+    for (var index = 0; index < items.length; index++) {
+        tmp = items[index].split("=");
+        if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
+    }
+    return result;
+}
+
 /* parameters that should be changed */
 
-var item_id_to_give = 42;
+var item_id_to_give = parseInt( lookupGET('item_id') ) || 0;
 
-var min_pulse = 0;
-var max_pulse = 100;
+var min_pulse = parseInt( lookupGET('min_pulse') ) || 0;
+var max_pulse = parseInt( lookupGET('max_pulse') ) || 0;
 
-var min_resp_rate = 0;
-var max_resp_rate = 100;
+var min_resp_rate = parseInt( lookupGET('min_resp_rate') ) || 0;
+var max_resp_rate = parseInt( lookupGET('max_resp_rate') ) || 0;
 
-var min_blood_top = 0;
-var max_blood_top = 100;
+var min_blood_top = parseInt( lookupGET('min_blood_top') ) || 0;
+var max_blood_top = parseInt( lookupGET('max_blood_top') ) || 0;
 
-var min_blood_bottom = 0;
-var max_blood_bottom = 100;
+var min_blood_bottom = parseInt( lookupGET('min_blood_bottom') ) || 0;
+var max_blood_bottom = parseInt( lookupGET('max_blood_bottom') ) || 0;
 
-var min_temp = 0;
-var max_temp = 100;
+var min_temp = parseInt( lookupGET('min_temp') ) || 0;
+var max_temp = parseInt( lookupGET('max_temp') ) || 0;
 
-var min_oxygen = 0;
-var max_oxygen = 100;
+var min_oxygen = parseInt( lookupGET('min_oxygen') ) || 0;
+var max_oxygen = parseInt( lookupGET('max_oxygen') ) || 0;
 
-var min_pain = 1;
-var max_pain = 5;
+var min_pain = parseInt( lookupGET('min_pain') ) || 0;
+var max_pain = parseInt( lookupGET('max_pain') ) || 0;
 
-var message_success = "You did it!";
-var message_failure = "Try again.";
+var message_success = lookupGET('message_success') || 'Success!';
+var message_failure = lookupGET('message_failure') || 'Try again.';
 
 /* end of parameters */
 

@@ -7,16 +7,27 @@
 <title>IV Machine</title>
 <script type="text/javascript">
 
+function lookupGET(val) {
+    var result = null,
+        tmp = [];
+    var items = location.search.substr(1).split("&");
+    for (var index = 0; index < items.length; index++) {
+        tmp = items[index].split("=");
+        if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
+    }
+    return result;
+}
+
 /* parameters that should be changed */
 
-var drug_name     = "Morphine";
-var drug_rate     = 10;
-var drug_vtbi     = 20;
-var drug_duration = 30;
+var drug_name     = lookupGET('drug_name') || 'drug_name';
+var drug_rate     = parseInt( lookupGET('drug_rate') ) || 0;
+var drug_vtbi     = parseInt( lookupGET('drug_vtbi') ) || 0;
+var drug_duration = parseInt( lookupGET('drug_duration') ) || 0;
 
-var item_id_to_give = 42;
-var message_success = "You did it!";
-var message_failure = "Try again.";
+var item_id_to_give = parseInt( lookupGET('item_id') ) || 0;
+var message_success = lookupGET('message_success') || 'Success!';
+var message_failure = lookupGET('message_failure') || 'Try again.';
 
 /* end of parameters */
 
