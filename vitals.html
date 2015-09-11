@@ -22,26 +22,26 @@ function lookupGET(val) {
 
 var item_id_to_give = parseInt( lookupGET('item_id') ) || 0;
 
-var min_pulse = parseInt( lookupGET('min_pulse') ) || 0;
-var max_pulse = parseInt( lookupGET('max_pulse') ) || 0;
+var min_pulse = parseFloat( lookupGET('min_pulse') ) || 0;
+var max_pulse = parseFloat( lookupGET('max_pulse') ) || 0;
 
-var min_resp_rate = parseInt( lookupGET('min_resp_rate') ) || 0;
-var max_resp_rate = parseInt( lookupGET('max_resp_rate') ) || 0;
+var min_resp_rate = parseFloat( lookupGET('min_resp_rate') ) || 0;
+var max_resp_rate = parseFloat( lookupGET('max_resp_rate') ) || 0;
 
-var min_blood_top = parseInt( lookupGET('min_blood_top') ) || 0;
-var max_blood_top = parseInt( lookupGET('max_blood_top') ) || 0;
+var min_blood_top = parseFloat( lookupGET('min_blood_top') ) || 0;
+var max_blood_top = parseFloat( lookupGET('max_blood_top') ) || 0;
 
-var min_blood_bottom = parseInt( lookupGET('min_blood_bottom') ) || 0;
-var max_blood_bottom = parseInt( lookupGET('max_blood_bottom') ) || 0;
+var min_blood_bottom = parseFloat( lookupGET('min_blood_bottom') ) || 0;
+var max_blood_bottom = parseFloat( lookupGET('max_blood_bottom') ) || 0;
 
-var min_temp = parseInt( lookupGET('min_temp') ) || 0;
-var max_temp = parseInt( lookupGET('max_temp') ) || 0;
+var min_temp = parseFloat( lookupGET('min_temp') ) || 0;
+var max_temp = parseFloat( lookupGET('max_temp') ) || 0;
 
-var min_oxygen = parseInt( lookupGET('min_oxygen') ) || 0;
-var max_oxygen = parseInt( lookupGET('max_oxygen') ) || 0;
+var min_oxygen = parseFloat( lookupGET('min_oxygen') ) || 0;
+var max_oxygen = parseFloat( lookupGET('max_oxygen') ) || 0;
 
-var min_pain = parseInt( lookupGET('min_pain') ) || 0;
-var max_pain = parseInt( lookupGET('max_pain') ) || 0;
+var min_pain = parseFloat( lookupGET('min_pain') ) || 0;
+var max_pain = parseFloat( lookupGET('max_pain') ) || 0;
 
 var message_success = lookupGET('message_success') || 'Success!';
 var message_failure = lookupGET('message_failure') || 'Try again.';

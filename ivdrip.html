@@ -21,9 +21,9 @@ function lookupGET(val) {
 /* parameters that should be changed */
 
 var drug_name     = lookupGET('drug_name') || 'drug_name';
-var drug_rate     = parseInt( lookupGET('drug_rate') ) || 0;
-var drug_vtbi     = parseInt( lookupGET('drug_vtbi') ) || 0;
-var drug_duration = parseInt( lookupGET('drug_duration') ) || 0;
+var drug_rate     = parseFloat( lookupGET('drug_rate') ) || 0;
+var drug_vtbi     = parseFloat( lookupGET('drug_vtbi') ) || 0;
+var drug_duration = parseFloat( lookupGET('drug_duration') ) || 0;
 
 var item_id_to_give = parseInt( lookupGET('item_id') ) || 0;
 var message_success = lookupGET('message_success') || 'Success!';
