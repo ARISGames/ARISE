@@ -64,6 +64,13 @@ function appReady() {
   document.getElementById('heading-name').textContent = patient_name;
   document.getElementById('heading-dob').textContent = patient_dob;
   document.getElementById('heading-physician').textContent = patient_physician;
+  var inputs = document.getElementsByTagName('input');
+  for (var i = 0; i < inputs.length; i++) {
+    (function(){
+      var input = inputs[i];
+      input.onclick = function(){ input.value = ''; };
+    })();
+  }
   document.getElementById('button-submit').onclick = function(){
     var passed = true;
     passed = passed && checkFloat('field-pulse'                , min_pulse       , max_pulse       );
