@@ -46,6 +46,10 @@ var max_pain = parseFloat( lookupGET('max_pain') ) || 0;
 var message_success = lookupGET('message_success') || 'Success!';
 var message_failure = lookupGET('message_failure') || 'Try again.';
 
+var patient_name = lookupGET('name') || '???';
+var patient_dob = lookupGET('dob') || '???';
+var patient_physician = lookupGET('physician') || '???';
+
 /* end of parameters */
 
 var ARIS = {};
@@ -57,6 +61,9 @@ function checkFloat(id, min, max) {
 
 function appReady() {
   FastClick.attach(document.body);
+  document.getElementById('heading-name').textContent = patient_name;
+  document.getElementById('heading-dob').textContent = patient_dob;
+  document.getElementById('heading-physician').textContent = patient_physician;
   document.getElementById('button-submit').onclick = function(){
     var passed = true;
     passed = passed && checkFloat('field-pulse'                , min_pulse       , max_pulse       );
@@ -170,15 +177,15 @@ module.exports.FastClick=e):window.FastClick=e})();
     <table>
       <tr>
         <td>Patient Name</td>
-        <td>???</td>
+        <td id="heading-name">???</td>
       </tr>
       <tr>
         <td>DOB</td>
-        <td>???</td>
+        <td id="heading-dob">???</td>
       </tr>
       <tr>
         <td>Physician</td>
-        <td>???</td>
+        <td id="heading-physician">???</td>
       </tr>
     </table>
   </p>
