@@ -50,6 +50,14 @@ var patient_name = lookupGET('name') || '???';
 var patient_dob = lookupGET('dob') || '???';
 var patient_physician = lookupGET('physician') || '???';
 
+var default_pulse        = parseFloat( lookupGET('default_pulse'       ) ) || 0;
+var default_resp_rate    = parseFloat( lookupGET('default_resp_rate'   ) ) || 0;
+var default_blood_top    = parseFloat( lookupGET('default_blood_top'   ) ) || 0;
+var default_blood_bottom = parseFloat( lookupGET('default_blood_bottom') ) || 0;
+var default_temp         = parseFloat( lookupGET('default_temp'        ) ) || 0;
+var default_oxygen       = parseFloat( lookupGET('default_oxygen'      ) ) || 0;
+var default_pain         = parseFloat( lookupGET('default_pain'        ) ) || 0;
+
 /* end of parameters */
 
 var ARIS = {};
@@ -71,6 +79,13 @@ function appReady() {
       input.onclick = function(){ input.value = ''; };
     })();
   }
+  document.getElementById('field-pulse'                ).value = default_pulse       ;
+  document.getElementById('field-respiratory-rate'     ).value = default_resp_rate   ;
+  document.getElementById('field-blood-pressure-top'   ).value = default_blood_top   ;
+  document.getElementById('field-blood-pressure-bottom').value = default_blood_bottom;
+  document.getElementById('field-temperature'          ).value = default_temp        ;
+  document.getElementById('field-oxygen'               ).value = default_oxygen      ;
+  document.getElementById('field-pain'                 ).value = default_pain        ;
   document.getElementById('button-submit').onclick = function(){
     var passed = true;
     passed = passed && checkFloat('field-pulse'                , min_pulse       , max_pulse       );
