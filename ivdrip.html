@@ -20,10 +20,14 @@ function lookupGET(val) {
 
 /* parameters that should be changed */
 
-var drug_name     = lookupGET('drug_name') || 'drug_name';
-var drug_rate     = parseFloat( lookupGET('drug_rate') ) || 0;
-var drug_vtbi     = parseFloat( lookupGET('drug_vtbi') ) || 0;
-var drug_duration = parseFloat( lookupGET('drug_duration') ) || 0;
+var drug_name        = lookupGET('drug_name') || 'drug_name';
+var drug_rate        = parseFloat( lookupGET('drug_rate'       ) ) || 0;
+var drug_vtbi        = parseFloat( lookupGET('drug_vtbi'       ) ) || 0;
+var drug_duration    = parseFloat( lookupGET('drug_duration'   ) ) || 0;
+var entered_rate     = parseFloat( lookupGET('entered_rate'    ) ) || 0;
+var entered_vtbi     = parseFloat( lookupGET('entered_vtbi'    ) ) || 0;
+var entered_duration = parseFloat( lookupGET('entered_duration') ) || 0;
+var should_stop      = lookupGET('should_stop') === 'true';
 
 var item_id_to_give = parseInt( lookupGET('item_id') ) || 0;
 var message_success = lookupGET('message_success') || 'Success!';
@@ -35,10 +39,7 @@ var patient_id = lookupGET('patient_id') || '???';
 
 var ARIS = {};
 
-var game_screen = 'stopped';
-var entered_rate = 0;
-var entered_vtbi = 0;
-var entered_duration = 0;
+var game_screen = should_stop ? 'started' : 'stopped';
 var current_value = '';
 
 function float_equal(a, b) {
@@ -74,8 +75,12 @@ function check() {
   passed = passed && float_equal(drug_rate    , entered_rate    );
   passed = passed && float_equal(drug_vtbi    , entered_vtbi    );
   passed = passed && float_equal(drug_duration, entered_duration);
+  displayResult(passed);
+}
+
+function displayResult(passed) {
   if (passed) {
-    game_screen = 'started';
+    game_screen = should_stop ? 'stopped' : 'started';
     gameDraw();
     ARIS.givePlayerItemCount(item_id_to_give, 1);
     document.getElementById('success-message').innerHTML = message_success;
@@ -164,6 +169,10 @@ function appReady() {
     if (game_screen == 'started') return;
     stopEditing();
     check();
+  };
+  document.getElementById('button-stop').onclick = function(){
+    if (game_screen != 'started') return;
+    displayResult(should_stop);
   };
   document.getElementById('patient-id').textContent = patient_id;
 }
