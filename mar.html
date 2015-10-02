@@ -89,7 +89,7 @@ function check() {
     var cell_dose = dom_row.children[2];
     var cell_administered = dom_row.children[3];
     if (administer_mode) {
-      var administered = cell_administered.children[0].value !== '';
+      var administered = !!(cell_administered.children[0].value.match(/\S/));
       if (administered !== mar_rows[i].administer) {
         return false;
       }
