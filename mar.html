@@ -54,6 +54,7 @@ function appReady() {
   for (var i = 0; i < mar_rows.length; i++) {
     var row = mar_rows[i];
     var tr = document.createElement('tr');
+    tr.classList.add(i % 2 === 0 ? 'row-even' : 'row-odd');
     var td1 = document.createElement('td');
     td1.appendChild(document.createTextNode(row.order));
     tr.appendChild(td1);
@@ -132,8 +133,22 @@ document.addEventListener('DOMContentLoaded', unlock);
 </script>
 <style type="text/css">
 
+body {
+  font-family: sans-serif;
+}
+
 table, th, td {
   border: 1px solid black;
+}
+
+.row-even {
+  background-color: #444;
+  color: white;
+}
+
+.row-odd {
+  background-color: #aaa;
+  color: black;
 }
 
 </style>
@@ -173,7 +188,7 @@ module.exports.FastClick=e):window.FastClick=e})();
     <th>Administered</th>
   </tr>
 </table>
-<button type="button" onclick="submit();">Submit</button>
+<p><button type="button" onclick="submit();">Submit</button></p>
 <p id="result-message"></p>
 
 </body>
