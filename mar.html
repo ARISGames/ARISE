@@ -20,6 +20,8 @@ function lookupGET(val) {
 
 /* parameters that should be changed */
 
+var item_id_to_give = parseInt( lookupGET('item_id') ) || 0;
+
 var mar_rows = [];
 var row_number = 1;
 while (true) {
@@ -41,6 +43,10 @@ var administer_mode = lookupGET('administer_mode') === 'true';
 /* end of parameters */
 
 var ARIS = {};
+
+function float_equal(a, b) {
+  return Math.abs(a - b) < 0.0001;
+}
 
 function appReady() {
   FastClick.attach(document.body);
@@ -76,6 +82,40 @@ function appReady() {
   }
 }
 
+function check() {
+  for (var i = 0; i < mar_rows.length; i++) {
+    var row = mar_rows[i];
+    var dom_row = document.getElementsByTagName('tr')[i + 1];
+    var cell_dose = dom_row.children[2];
+    var cell_administered = dom_row.children[3];
+    if (administer_mode) {
+      var administered = cell_administered.children[0].value !== '';
+      if (administered !== mar_rows[i].administer) {
+        return false;
+      }
+    } else {
+      var dose = parseFloat( cell_dose.children[0].value );
+      if (!(float_equal(dose, mar_rows[i].dose))) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+function submit() {
+  var msg = document.getElementById('result-message');
+  if (check()) {
+    msg.textContent = 'You did it!';
+    ARIS.givePlayerItemCount(item_id_to_give, 1);
+    setTimeout(function(){
+      ARIS.exit();
+    }, 1500);
+  } else {
+    msg.textContent = 'Try again.';
+  }
+}
+
 // hack to wait for both aris and the dom
 var locks = 2;
 function unlock() {
@@ -86,7 +126,7 @@ ARIS.ready = unlock;
 document.addEventListener('DOMContentLoaded', unlock);
 
 // for debugging
-// ARIS.givePlayerItemCount = ARIS.exit = function(){};
+// ARIS.givePlayerItemCount = ARIS.exit = function(){ console.log('called aris fn'); };
 // ARIS.ready();
 
 </script>
@@ -133,6 +173,8 @@ module.exports.FastClick=e):window.FastClick=e})();
     <th>Administered</th>
   </tr>
 </table>
+<button type="button" onclick="submit();">Submit</button>
+<p id="result-message"></p>
 
 </body>
 </html>
