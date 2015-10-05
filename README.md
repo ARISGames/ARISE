@@ -48,7 +48,8 @@ object on the map.
           &default_pain=7
 
         http://myhosting.com/path/to/mar.html
-          ?row1order=Order%201
+          ?item_id=1234
+          &row1order=Order%201
           &row1time=then
           &row1dose=15
           &row1administer=true
