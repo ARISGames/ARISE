@@ -68,7 +68,7 @@ function appReady() {
       var td4 = document.createElement('td');
       if (ARIS.cache.getPlayerItemCount(row.item_id) > 0) {
         var input = document.createElement('input');
-        input.type = 'text';
+        input.type = 'checkbox';
         td4.appendChild(input);
       }
       tr.appendChild(td4);
@@ -94,7 +94,7 @@ function check() {
     var cell_administered = dom_row.children[3];
     if (administer_mode) {
       if (cell_administered.children.length > 0) {
-        var administered = !!(cell_administered.children[0].value.match(/\S/));
+        var administered = cell_administered.children[0].checked;
         if (!administered) {
           // they need to fill in the box
           return false;
