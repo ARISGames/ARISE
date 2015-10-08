@@ -61,11 +61,11 @@ object on the map.
           &row1order=Order%201
           &row1time=then
           &row1dose=15
-          &row1administer=true
+          &row1item=111
           &row2order=Order%202
           &row2time=now
           &row2dose=30
-          &row2administer=false
+          &row2item=222
           # continue rows as necessary
           &administer_mode=false # set to true if player should administer instead of calculate dosages
 

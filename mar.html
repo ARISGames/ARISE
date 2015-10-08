@@ -30,7 +30,7 @@ while (true) {
     row.order = lookupGET('row' + row_number + 'order') || '';
     row.time = lookupGET('row' + row_number + 'time') || '';
     row.dose = parseFloat( lookupGET('row' + row_number + 'dose') ) || 0;
-    row.administer = lookupGET('row' + row_number + 'administer') === 'true';
+    row.item_id = parseInt( lookupGET('row' + row_number + 'item') ) || 0;
     mar_rows.push(row);
   } else {
     break;
@@ -66,9 +66,11 @@ function appReady() {
       td3.appendChild(document.createTextNode(row.dose));
       tr.appendChild(td3);
       var td4 = document.createElement('td');
-      var input = document.createElement('input');
-      input.type = 'text';
-      td4.appendChild(input);
+      if (ARIS.cache.getPlayerItemCount(row.item_id) > 0) {
+        var input = document.createElement('input');
+        input.type = 'text';
+        td4.appendChild(input);
+      }
       tr.appendChild(td4);
     } else {
       var td3 = document.createElement('td');
@@ -84,31 +86,50 @@ function appReady() {
 }
 
 function check() {
+  var tracking_items = [];
   for (var i = 0; i < mar_rows.length; i++) {
     var row = mar_rows[i];
     var dom_row = document.getElementsByTagName('tr')[i + 1];
     var cell_dose = dom_row.children[2];
     var cell_administered = dom_row.children[3];
     if (administer_mode) {
-      var administered = !!(cell_administered.children[0].value.match(/\S/));
-      if (administered !== mar_rows[i].administer) {
-        return false;
+      if (cell_administered.children.length > 0) {
+        var administered = !!(cell_administered.children[0].value.match(/\S/));
+        if (!administered) {
+          // they need to fill in the box
+          return false;
+        }
+      } else {
+        // no box to fill in
       }
     } else {
-      var dose = parseFloat( cell_dose.children[0].value );
-      if (!(float_equal(dose, mar_rows[i].dose))) {
-        return false;
+      var entered_dose = cell_dose.children[0].value;
+      if (entered_dose.match(/\S/))
+      if (cell_dose.children[0].value.match(/\S/)) {
+        var dose = parseFloat( cell_dose.children[0].value );
+        if (!(float_equal(dose, mar_rows[i].dose))) {
+          // they entered the wrong value
+          return false;
+        }
+        // they entered the right value
+        tracking_items.push(row.item_id);
+      } else {
+        // they left the box blank, do nothing
       }
     }
   }
-  return true;
+  return tracking_items;
 }
 
 function submit() {
   var msg = document.getElementById('result-message');
-  if (check()) {
+  var tracking_items_or_false = check();
+  if (tracking_items_or_false !== false) {
     msg.textContent = 'You did it!';
     ARIS.givePlayerItemCount(item_id_to_give, 1);
+    for (var i = 0; i < tracking_items_or_false.length; i++) {
+      ARIS.givePlayerItemCount(tracking_items_or_false[i], 1);
+    }
     setTimeout(function(){
       ARIS.exit();
     }, 1500);
@@ -127,8 +148,18 @@ ARIS.ready = unlock;
 document.addEventListener('DOMContentLoaded', unlock);
 
 // for debugging
-// ARIS.givePlayerItemCount = ARIS.exit = function(){ console.log('called aris fn'); };
-// ARIS.ready();
+/*
+ARIS.givePlayerItemCount = function(id, count){
+  console.log('giving player ' + count + ' of item ' + id);
+};
+ARIS.exit = function(){ console.log('exiting aris'); };
+ARIS.cache = {
+  getPlayerItemCount: function(item_id){
+    return 1;
+  },
+}
+ARIS.ready();
+// */
 
 </script>
 <style type="text/css">
