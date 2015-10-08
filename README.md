@@ -17,6 +17,15 @@ object on the map.
           &entered_vtbi=50
           &entered_duration=60
           &goal=start # can be start, stop, or restart
+          # the following fields are used for two-pump mode
+          &two_drugs=true
+          &drug_name_2=Tylenol
+          &drug_rate_2=10
+          &drug_vtbi_2=20
+          &drug_duration_2=30
+          &entered_rate_2=40
+          &entered_vtbi_2=50
+          &entered_duration_2=60
 
         http://myhosting.com/path/to/vitals.html
           ?item_id=1234

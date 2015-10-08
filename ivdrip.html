@@ -20,6 +20,8 @@ function lookupGET(val) {
 
 /* parameters that should be changed */
 
+var two_drugs = lookupGET('two_drugs') === 'true';
+
 var drug_name        = lookupGET('drug_name') || 'drug_name';
 var drug_rate        = parseFloat( lookupGET('drug_rate'       ) ) || 0;
 var drug_vtbi        = parseFloat( lookupGET('drug_vtbi'       ) ) || 0;
@@ -27,6 +29,14 @@ var drug_duration    = parseFloat( lookupGET('drug_duration'   ) ) || 0;
 var entered_rate     = parseFloat( lookupGET('entered_rate'    ) ) || 0;
 var entered_vtbi     = parseFloat( lookupGET('entered_vtbi'    ) ) || 0;
 var entered_duration = parseFloat( lookupGET('entered_duration') ) || 0;
+
+var drug_name_2        = lookupGET('drug_name_2') || 'drug_name_2';
+var drug_rate_2        = parseFloat( lookupGET('drug_rate_2'       ) ) || 0;
+var drug_vtbi_2        = parseFloat( lookupGET('drug_vtbi_2'       ) ) || 0;
+var drug_duration_2    = parseFloat( lookupGET('drug_duration_2'   ) ) || 0;
+var entered_rate_2     = parseFloat( lookupGET('entered_rate_2'    ) ) || 0;
+var entered_vtbi_2     = parseFloat( lookupGET('entered_vtbi_2'    ) ) || 0;
+var entered_duration_2 = parseFloat( lookupGET('entered_duration_2') ) || 0;
 
 var goal = 'start';
 switch (lookupGET('goal')) {
@@ -52,6 +62,7 @@ var patient_id = lookupGET('patient_id') || '???';
 var ARIS = {};
 
 var won = false;
+var show_drug_2 = false;
 
 var game_screen;
 switch (goal) {
@@ -71,25 +82,35 @@ function float_equal(a, b) {
 
 function gameDraw() {
   document.getElementById('success-message').innerHTML = '';
-  if (game_screen === 'started') {
-    document.getElementById('display-1').innerHTML = drug_name + ' (started)';
+  var display_drug_name;
+  if (two_drugs) {
+    if (show_drug_2) {
+      display_drug_name = 'Drug 2: ' + drug_name_2;
+    } else {
+      display_drug_name = 'Drug 1: ' + drug_name;
+    }
   } else {
-    document.getElementById('display-1').innerHTML = drug_name + ' (stopped)';
+    display_drug_name = drug_name;
+  }
+  if (game_screen === 'started') {
+    document.getElementById('display-1').innerHTML = display_drug_name + ' (started)';
+  } else {
+    document.getElementById('display-1').innerHTML = display_drug_name + ' (stopped)';
   }
   if (game_screen === 'editing_rate') {
     document.getElementById('display-2').innerHTML = current_value + '&#9632; ml/hr';
   } else {
-    document.getElementById('display-2').innerHTML = entered_rate + ' ml/hr';
+    document.getElementById('display-2').innerHTML = (show_drug_2 ? entered_rate_2 : entered_rate) + ' ml/hr';
   }
   if (game_screen === 'editing_vtbi') {
     document.getElementById('display-3').innerHTML = current_value + '&#9632; ml';
   } else {
-    document.getElementById('display-3').innerHTML = entered_vtbi + ' ml';
+    document.getElementById('display-3').innerHTML = (show_drug_2 ? entered_vtbi_2 : entered_vtbi) + ' ml';
   }
   if (game_screen === 'editing_duration') {
     document.getElementById('display-4').innerHTML = current_value + '&#9632; mins';
   } else {
-    document.getElementById('display-4').innerHTML = entered_duration + ' mins';
+    document.getElementById('display-4').innerHTML = (show_drug_2 ? entered_duration_2 : entered_duration) + ' mins';
   }
 }
 
@@ -98,6 +119,11 @@ function check() {
   passed = passed && float_equal(drug_rate    , entered_rate    );
   passed = passed && float_equal(drug_vtbi    , entered_vtbi    );
   passed = passed && float_equal(drug_duration, entered_duration);
+  if (two_drugs) {
+    passed = passed && float_equal(drug_rate_2    , entered_rate_2    );
+    passed = passed && float_equal(drug_vtbi_2    , entered_vtbi_2    );
+    passed = passed && float_equal(drug_duration_2, entered_duration_2);
+  }
   displayResult(passed);
 }
 
@@ -137,19 +163,52 @@ function type(str) {
 function stopEditing() {
   switch (game_screen) {
     case 'editing_rate':
-      entered_rate = parseFloat(current_value) || 0;
+      if (show_drug_2) {
+        entered_rate_2 = parseFloat(current_value) || 0;
+      } else {
+        entered_rate = parseFloat(current_value) || 0;
+      }
       game_screen = 'stopped';
       break;
     case 'editing_vtbi':
-      entered_vtbi = parseFloat(current_value) || 0;
+      if (show_drug_2) {
+        entered_vtbi_2 = parseFloat(current_value) || 0;
+      } else {
+        entered_vtbi = parseFloat(current_value) || 0;
+      }
       game_screen = 'stopped';
       break;
     case 'editing_duration':
-      entered_duration = parseFloat(current_value) || 0;
+      if (show_drug_2) {
+        entered_duration_2 = parseFloat(current_value) || 0;
+      } else {
+        entered_duration = parseFloat(current_value) || 0;
+      }
       game_screen = 'stopped';
       break;
   }
   gameDraw();
+}
+
+// the massive hack to dynamically reposition text/buttons on window resize
+function resize() {
+  var screenW = document.getElementById('the-ivdrip').offsetWidth;
+  var screenH = document.getElementById('the-ivdrip').offsetHeight;
+  var imageW = 1346;
+  var imageH = 1815;
+  if (screenW / screenH < imageW / imageH) {
+    // screen is taller than image
+    var realW = screenW;
+    var realH = screenW * (imageH / imageW);
+  } else {
+    // screen is wider than image
+    var realW = screenH * (imageW / imageH);
+    var realH = screenH;
+  }
+  document.getElementById('the-overlay').style.width = realW + 'px';
+  document.getElementById('the-overlay').style.height = realH + 'px';
+  document.getElementById('the-overlay').style.left = ((screenW - realW) / 2) + 'px';
+  document.getElementById('the-overlay').style.top = ((screenH - realH) / 2) + 'px';
 }
 
 function appReady() {
@@ -161,7 +220,11 @@ function appReady() {
     if (won) return;
     if (game_screen == 'started') return;
     stopEditing();
-    current_value = entered_rate === 0 ? '' : '' + entered_rate;
+    if (show_drug_2) {
+      current_value = entered_rate_2 === 0 ? '' : '' + entered_rate_2;
+    } else {
+      current_value = entered_rate === 0 ? '' : '' + entered_rate;
+    }
     game_screen = 'editing_rate';
     gameDraw();
   };
@@ -169,7 +232,11 @@ function appReady() {
     if (won) return;
     if (game_screen == 'started') return;
     stopEditing();
-    current_value = entered_vtbi === 0 ? '' : '' + entered_vtbi;
+    if (show_drug_2) {
+      current_value = entered_vtbi_2 === 0 ? '' : '' + entered_vtbi_2;
+    } else {
+      current_value = entered_vtbi === 0 ? '' : '' + entered_vtbi;
+    }
     game_screen = 'editing_vtbi';
     gameDraw();
   };
@@ -177,7 +244,11 @@ function appReady() {
     if (won) return;
     if (game_screen == 'started') return;
     stopEditing();
-    current_value = entered_duration === 0 ? '' : '' + entered_duration;
+    if (show_drug_2) {
+      current_value = entered_duration_2 === 0 ? '' : '' + entered_duration_2;
+    } else {
+      current_value = entered_duration === 0 ? '' : '' + entered_duration;
+    }
     game_screen = 'editing_duration';
     gameDraw();
   };
@@ -192,6 +263,14 @@ function appReady() {
   document.getElementById('button-8').onclick = type('8');
   document.getElementById('button-9').onclick = type('9');
   document.getElementById('button-dot').onclick = type('.');
+  document.getElementById('button-switch').onclick = function(){
+    if (!two_drugs) return;
+    if (game_screen == 'editing_rate'    ) return;
+    if (game_screen == 'editing_vtbi'    ) return;
+    if (game_screen == 'editing_duration') return;
+    show_drug_2 = !show_drug_2;
+    gameDraw();
+  }
   document.getElementById('button-enter').onclick = function(){
     if (won) return;
     if (game_screen == 'started') return;
@@ -220,6 +299,9 @@ function appReady() {
     }
   };
   document.getElementById('patient-id').textContent = patient_id;
+  if (two_drugs) {
+    document.getElementById('label-switch').textContent = 'Switch';
+  }
 }
 
 // hack to wait for both aris and the dom
@@ -232,29 +314,11 @@ ARIS.ready = unlock;
 document.addEventListener('DOMContentLoaded', unlock);
 
 // for debugging
-// ARIS.givePlayerItemCount = ARIS.exit = function(){ console.log("ARIS call"); };
-// ARIS.ready();
-
-// the massive hack to dynamically reposition text/buttons on window resize
-function resize() {
-  var screenW = document.getElementById('the-ivdrip').offsetWidth;
-  var screenH = document.getElementById('the-ivdrip').offsetHeight;
-  var imageW = 1346;
-  var imageH = 1815;
-  if (screenW / screenH < imageW / imageH) {
-    // screen is taller than image
-    var realW = screenW;
-    var realH = screenW * (imageH / imageW);
-  } else {
-    // screen is wider than image
-    var realW = screenH * (imageW / imageH);
-    var realH = screenH;
-  }
-  document.getElementById('the-overlay').style.width = realW + 'px';
-  document.getElementById('the-overlay').style.height = realH + 'px';
-  document.getElementById('the-overlay').style.left = ((screenW - realW) / 2) + 'px';
-  document.getElementById('the-overlay').style.top = ((screenH - realH) / 2) + 'px';
-}
+/*
+ARIS.givePlayerItemCount = function(item_id, count){ console.log("Giving player " + count + " of item #" + item_id); };
+ARIS.exit = function(){ console.log("Exiting ARIS"); };
+ARIS.ready();
+// */
 
 </script>
 <style type="text/css">
@@ -441,6 +505,14 @@ body {
   top: calc((1205 / 1815) * 100%);
 }
 
+#button-switch {
+  position: absolute;
+  width: calc(((400 - 300) / 1346) * 100%);
+  height: calc(((1300 - 1200) / 1815) * 100%);
+  left: calc((300 / 1346) * 100%);
+  top: calc((1200 / 1815) * 100%);
+}
+
 #display-1 {
   position: absolute;
   color: #506197;
@@ -503,6 +575,19 @@ body {
   width: calc(((1080 - 965) / 1346) * 100%);
   height: calc(((1099 - 1025) / 1815) * 100%);
   left: calc((965 / 1346) * 100%);
+  top: calc((1025 / 1815) * 100%);
+  font-size: 3vh;
+  font-family: monospace;
+  color: #506197;
+}
+
+#label-switch {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: calc(((1080 - 965) / 1346) * 100%);
+  height: calc(((1099 - 1025) / 1815) * 100%);
+  left: calc((270 / 1346) * 100%);
   top: calc((1025 / 1815) * 100%);
   font-size: 3vh;
   font-family: monospace;
@@ -572,12 +657,14 @@ module.exports.FastClick=e):window.FastClick=e})();
     <div class="iv-button" id="button-stop"></div>
     <div class="iv-button" id="button-enter"></div>
     <div class="iv-button" id="button-exit"></div>
+    <div class="iv-button" id="button-switch"></div>
     <div id="display-1"></div>
     <div id="display-2"></div>
     <div id="display-3"></div>
     <div id="display-4"></div>
     <div id="success-message"></div>
     <div id="success-ok"></div>
+    <div id="label-switch"></div>
     <div id="patient-id"></div>
   </div>
 </div>
