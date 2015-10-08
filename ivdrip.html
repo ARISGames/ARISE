@@ -27,7 +27,19 @@ var drug_duration    = parseFloat( lookupGET('drug_duration'   ) ) || 0;
 var entered_rate     = parseFloat( lookupGET('entered_rate'    ) ) || 0;
 var entered_vtbi     = parseFloat( lookupGET('entered_vtbi'    ) ) || 0;
 var entered_duration = parseFloat( lookupGET('entered_duration') ) || 0;
-var should_stop      = lookupGET('should_stop') === 'true';
+
+var goal = 'start';
+switch (lookupGET('goal')) {
+  case 'restart':
+    goal = 'restart';
+    break;
+  case 'stop':
+    goal = 'stop';
+    break;
+  case 'start':
+    goal = 'start';
+    break;
+}
 
 var item_id_to_give = parseInt( lookupGET('item_id') ) || 0;
 var message_success = lookupGET('message_success') || 'Success!';
@@ -39,7 +51,18 @@ var patient_id = lookupGET('patient_id') || '???';
 
 var ARIS = {};
 
-var game_screen = should_stop ? 'started' : 'stopped';
+var won = false;
+
+var game_screen;
+switch (goal) {
+  case 'restart':
+  case 'stop':
+    game_screen = 'started';
+    break;
+  case 'start':
+    game_screen = 'stopped';
+    break;
+}
 var current_value = '';
 
 function float_equal(a, b) {
@@ -80,7 +103,16 @@ function check() {
 
 function displayResult(passed) {
   if (passed) {
-    game_screen = should_stop ? 'stopped' : 'started';
+    won = true;
+    switch (goal) {
+      case 'stop':
+        game_screen = 'stopped';
+        break;
+      case 'start':
+      case 'restart':
+        game_screen = 'started';
+        break;
+    }
     gameDraw();
     ARIS.givePlayerItemCount(item_id_to_give, 1);
     document.getElementById('success-message').innerHTML = message_success;
@@ -95,6 +127,7 @@ function displayResult(passed) {
 
 function type(str) {
   return function(){
+    if (won) return;
     if (game_screen == 'started') return;
     current_value += str;
     gameDraw();
@@ -125,6 +158,7 @@ function appReady() {
   document.body.onresize = resize;
   gameDraw();
   document.getElementById('button-line-rate').onclick = function(){
+    if (won) return;
     if (game_screen == 'started') return;
     stopEditing();
     current_value = entered_rate === 0 ? '' : '' + entered_rate;
@@ -132,6 +166,7 @@ function appReady() {
     gameDraw();
   };
   document.getElementById('button-line-vtbi').onclick = function(){
+    if (won) return;
     if (game_screen == 'started') return;
     stopEditing();
     current_value = entered_vtbi === 0 ? '' : '' + entered_vtbi;
@@ -139,6 +174,7 @@ function appReady() {
     gameDraw();
   };
   document.getElementById('button-line-duration').onclick = function(){
+    if (won) return;
     if (game_screen == 'started') return;
     stopEditing();
     current_value = entered_duration === 0 ? '' : '' + entered_duration;
@@ -157,22 +193,31 @@ function appReady() {
   document.getElementById('button-9').onclick = type('9');
   document.getElementById('button-dot').onclick = type('.');
   document.getElementById('button-enter').onclick = function(){
+    if (won) return;
     if (game_screen == 'started') return;
     stopEditing();
   }
   document.getElementById('button-clear').onclick = function(){
+    if (won) return;
     if (game_screen == 'started') return;
     current_value = '';
     gameDraw();
   };
   document.getElementById('button-start').onclick = function(){
+    if (won) return;
     if (game_screen == 'started') return;
     stopEditing();
     check();
   };
   document.getElementById('button-stop').onclick = function(){
+    if (won) return;
     if (game_screen != 'started') return;
-    displayResult(should_stop);
+    if (goal == 'stop') {
+      displayResult(true);
+    } else {
+      game_screen = 'stopped';
+      gameDraw();
+    }
   };
   document.getElementById('patient-id').textContent = patient_id;
 }
@@ -187,7 +232,7 @@ ARIS.ready = unlock;
 document.addEventListener('DOMContentLoaded', unlock);
 
 // for debugging
-// ARIS.givePlayerItemCount = ARIS.exit = function(){};
+// ARIS.givePlayerItemCount = ARIS.exit = function(){ console.log("ARIS call"); };
 // ARIS.ready();
 
 // the massive hack to dynamically reposition text/buttons on window resize

@@ -16,7 +16,7 @@ object on the map.
           &entered_rate=40
           &entered_vtbi=50
           &entered_duration=60
-          &should_stop=false # set to true if pressing Stop is the right answer
+          &goal=start # can be start, stop, or restart
 
         http://myhosting.com/path/to/vitals.html
           ?item_id=1234
