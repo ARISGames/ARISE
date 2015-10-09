@@ -55,8 +55,6 @@ var item_id_to_give = parseInt( lookupGET('item_id') ) || 0;
 var message_success = lookupGET('message_success') || 'Success!';
 var message_failure = lookupGET('message_failure') || 'Try again.';
 
-var patient_id = lookupGET('patient_id') || '???';
-
 /* end of parameters */
 
 var ARIS = {};
@@ -298,7 +296,6 @@ function appReady() {
       gameDraw();
     }
   };
-  document.getElementById('patient-id').textContent = patient_id;
   if (two_drugs) {
     document.getElementById('label-switch').textContent = 'Switch';
   }
@@ -594,15 +591,6 @@ body {
   color: #506197;
 }
 
-#patient-id {
-  position: absolute;
-  color: #506197;
-  font-size: 2.5vh;
-  font-family: monospace;
-  left: calc((510 / 1346) * 100%);
-  top: calc((780 / 1815) * 100%);
-}
-
 .iv-button {
   cursor: pointer;
 }
@@ -665,7 +653,6 @@ module.exports.FastClick=e):window.FastClick=e})();
     <div id="success-message"></div>
     <div id="success-ok"></div>
     <div id="label-switch"></div>
-    <div id="patient-id"></div>
   </div>
 </div>
 
