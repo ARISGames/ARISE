@@ -165,6 +165,11 @@ button {
   font-size: 18px;
 }
 
+#patient-info {
+  margin-bottom: 10px;
+  display: none;
+}
+
 </style>
 <script type="text/javascript">
 /*
@@ -195,68 +200,64 @@ module.exports.FastClick=e):window.FastClick=e})();
 <body>
 
 <form>
-  <p>
-    <table>
-      <tr>
-        <td>Patient Name</td>
-        <td id="heading-name">???</td>
-      </tr>
-      <tr>
-        <td>DOB</td>
-        <td id="heading-dob">???</td>
-      </tr>
-      <tr>
-        <td>Physician</td>
-        <td id="heading-physician">???</td>
-      </tr>
-    </table>
-  </p>
-  <p>
-    <table>
-      <tr>
-        <td>Pulse (bpm)</td>
-        <td>
-          <input id="field-pulse" type="number" value="0">
-        </td>
-      </tr>
-      <tr>
-        <td>Resp. Rate (/min)</td>
-        <td>
-          <input id="field-respiratory-rate" type="number" value="0">
-        </td>
-      </tr>
-      <tr>
-        <td>BP Systolic (mmHg)</td>
-        <td>
-          <input id="field-blood-pressure-top" type="number" value="0">
-        </td>
-      </tr>
-      <tr>
-        <td>BP Diastolic (mmHg)</td>
-        <td>
-          <input id="field-blood-pressure-bottom" type="number" value="0">
-        </td>
-      </tr>
-      <tr>
-        <td>Temperature (&deg;C)</td>
-        <td>
-          <input id="field-temperature" type="number" value="0">
-        </td>
-      </tr>
-      <tr>
-        <td>O<sup>2</sup> (%)</td>
-        <td>
-          <input id="field-oxygen" type="number" value="0">
-        </td>
-      </tr>
-      <tr>
-        <td>Pain (1-10)</td>
-        <td>
-          <input id="field-pain" type="number" value="1">
-        </td>
-      </tr>
-    </table>
-  </p>
+  <table id="patient-info">
+    <tr>
+      <td>Patient Name</td>
+      <td id="heading-name">???</td>
+    </tr>
+    <tr>
+      <td>DOB</td>
+      <td id="heading-dob">???</td>
+    </tr>
+    <tr>
+      <td>Physician</td>
+      <td id="heading-physician">???</td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <td>Pulse (bpm)</td>
+      <td>
+        <input id="field-pulse" type="number" value="0">
+      </td>
+    </tr>
+    <tr>
+      <td>Resp. Rate (/min)</td>
+      <td>
+        <input id="field-respiratory-rate" type="number" value="0">
+      </td>
+    </tr>
+    <tr>
+      <td>BP Systolic (mmHg)</td>
+      <td>
+        <input id="field-blood-pressure-top" type="number" value="0">
+      </td>
+    </tr>
+    <tr>
+      <td>BP Diastolic (mmHg)</td>
+      <td>
+        <input id="field-blood-pressure-bottom" type="number" value="0">
+      </td>
+    </tr>
+    <tr>
+      <td>Temperature (&deg;C)</td>
+      <td>
+        <input id="field-temperature" type="number" value="0">
+      </td>
+    </tr>
+    <tr>
+      <td>O<sup>2</sup> (%)</td>
+      <td>
+        <input id="field-oxygen" type="number" value="0">
+      </td>
+    </tr>
+    <tr>
+      <td>Pain (1-10)</td>
+      <td>
+        <input id="field-pain" type="number" value="1">
+      </td>
+    </tr>
+  </table>
   <p>
     <button id="button-submit" type="button">Submit</button>
     <span id="feedback"></span>
