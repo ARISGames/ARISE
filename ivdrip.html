@@ -79,22 +79,18 @@ function float_equal(a, b) {
 }
 
 function gameDraw() {
-  document.getElementById('success-message').innerHTML = '';
+  document.getElementById('success-message').innerHTML = game_screen === 'started' ? 'Pump started' : 'Pump stopped';
   var display_drug_name;
   if (two_drugs) {
     if (show_drug_2) {
-      display_drug_name = 'Drug 2: ' + drug_name_2;
+      display_drug_name = drug_name_2 + ' (secondary)';
     } else {
-      display_drug_name = 'Drug 1: ' + drug_name;
+      display_drug_name = drug_name + ' (primary)';
     }
   } else {
     display_drug_name = drug_name;
   }
-  if (game_screen === 'started') {
-    document.getElementById('display-1').innerHTML = display_drug_name + ' (started)';
-  } else {
-    document.getElementById('display-1').innerHTML = display_drug_name + ' (stopped)';
-  }
+  document.getElementById('display-top').innerHTML = display_drug_name;
   if (game_screen === 'editing_rate') {
     document.getElementById('display-2').innerHTML = current_value + '&#9632; ml/hr';
   } else {
@@ -139,13 +135,13 @@ function displayResult(passed) {
     }
     gameDraw();
     ARIS.givePlayerItemCount(item_id_to_give, 1);
-    document.getElementById('success-message').innerHTML = message_success;
+    document.getElementById('success-message').innerHTML = (game_screen === 'started' ? 'Pump started' : 'Pump stopped') + '<br />' + message_success;
     document.getElementById('success-ok').innerHTML = 'OK';
     document.getElementById('button-exit').onclick = function(){
       ARIS.exit();
     }
   } else {
-    document.getElementById('success-message').innerHTML = message_failure;
+    document.getElementById('success-message').innerHTML = (game_screen === 'started' ? 'Pump started' : 'Pump stopped') + '<br />' + message_failure;
   }
 }
 
@@ -262,6 +258,7 @@ function appReady() {
   document.getElementById('button-9').onclick = type('9');
   document.getElementById('button-dot').onclick = type('.');
   document.getElementById('button-switch').onclick = function(){
+    if (won) return;
     if (!two_drugs) return;
     if (game_screen == 'editing_rate'    ) return;
     if (game_screen == 'editing_vtbi'    ) return;
@@ -510,6 +507,17 @@ body {
   top: calc((1200 / 1815) * 100%);
 }
 
+#display-top {
+  position: absolute;
+  color: #cdd1e7;
+  width: calc(((1079 - 270) / 1346) * 100%);
+  height: calc(((270 - 188) / 1815) * 100%);
+  left: calc((280 / 1346) * 100%);
+  top: calc((85 / 1815) * 100%);
+  font-size: 2.5vh;
+  font-family: monospace;
+}
+
 #display-1 {
   position: absolute;
   color: #506197;
@@ -646,6 +654,7 @@ module.exports.FastClick=e):window.FastClick=e})();
     <div class="iv-button" id="button-enter"></div>
     <div class="iv-button" id="button-exit"></div>
     <div class="iv-button" id="button-switch"></div>
+    <div id="display-top"></div>
     <div id="display-1"></div>
     <div id="display-2"></div>
     <div id="display-3"></div>
