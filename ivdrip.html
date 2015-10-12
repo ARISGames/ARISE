@@ -106,6 +106,9 @@ function gameDraw() {
   } else {
     document.getElementById('display-4').innerHTML = (show_drug_2 ? entered_duration_2 : entered_duration) + ' mins';
   }
+  if (two_drugs) {
+    document.getElementById('label-switch').textContent = show_drug_2 ? 'Primary' : 'Secondary';
+  }
 }
 
 function check() {
@@ -293,9 +296,6 @@ function appReady() {
       gameDraw();
     }
   };
-  if (two_drugs) {
-    document.getElementById('label-switch').textContent = 'Switch';
-  }
 }
 
 // hack to wait for both aris and the dom
