@@ -27,6 +27,37 @@ object on the map.
           &entered_vtbi_2=50
           &entered_duration_2=60
 
+        # PCA pump mode
+        http://myhosting.com/path/to/ivdrip.html
+          ?drug_name=Morphine
+          &drug_dose=10
+          &drug_lockout=20
+          &drug_basal=30
+          &drug_limit=40
+          &drug_bolus=50
+          &item_id=1234
+          &message_success=You%20did%20it!
+          &message_failure=Try%20again.
+          &entered_dose=60
+          &entered_lockout=70
+          &entered_basal=80
+          &entered_limit=90
+          &entered_bolus=100
+          &goal=start # can be start, stop, or restart
+          # the following fields are used for two-pump mode
+          &two_drugs=true
+          &drug_name_2=Tylenol
+          &drug_dose_2=10
+          &drug_lockout_2=20
+          &drug_basal_2=30
+          &drug_limit_2=40
+          &drug_bolus_2=50
+          &entered_dose_2=60
+          &entered_lockout_2=70
+          &entered_basal_2=80
+          &entered_limit_2=90
+          &entered_bolus_2=100
+
         http://myhosting.com/path/to/vitals.html
           ?item_id=1234
           &min_pulse=0
