@@ -84,10 +84,11 @@ function appReady() {
       input.type = 'text';
       td3.appendChild(input);
       tr.appendChild(td3);
-      var td4 = document.createElement('td');
-      tr.appendChild(td4);
     }
     mar.appendChild(tr);
+  }
+  if (!administer_mode) {
+    document.getElementById('the-administered-header').remove();
   }
 }
 
@@ -223,7 +224,7 @@ module.exports.FastClick=e):window.FastClick=e})();
     <th>Order</th>
     <th>Sch. Time</th>
     <th>Dose</th>
-    <th>Administered</th>
+    <th id="the-administered-header">Administered</th>
   </tr>
 </table>
 <p><button type="button" onclick="submit();">Submit</button></p>
