@@ -96,7 +96,7 @@ object on the map.
           &row2order=Order%202
           &row2time=now
           &row2dose=30
-          &row2item=222
+          &row2static=true # not a user-filled row; just read-only info
           # continue rows as necessary
           &administer_mode=false # set to true if player should administer instead of calculate dosages
 

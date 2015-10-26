@@ -31,6 +31,7 @@ while (true) {
     row.time = lookupGET('row' + row_number + 'time') || '';
     row.dose = parseFloat( lookupGET('row' + row_number + 'dose') ) || 0;
     row.item_id = parseInt( lookupGET('row' + row_number + 'item') ) || 0;
+    row.static = lookupGET('row' + row_number + 'static') === 'true';
     mar_rows.push(row);
   } else {
     break;
@@ -72,7 +73,7 @@ function appReady() {
       td3.appendChild(createHTMLNode(row.dose));
       tr.appendChild(td3);
       var td4 = document.createElement('td');
-      if (ARIS.cache.getPlayerItemCount(row.item_id) > 0) {
+      if (!(row.static) && ARIS.cache.getPlayerItemCount(row.item_id) > 0) {
         var input = document.createElement('input');
         input.type = 'checkbox';
         td4.appendChild(input);
@@ -80,9 +81,13 @@ function appReady() {
       tr.appendChild(td4);
     } else {
       var td3 = document.createElement('td');
-      var input = document.createElement('input');
-      input.type = 'text';
-      td3.appendChild(input);
+      if (row.static) {
+        td3.appendChild(createHTMLNode(row.dose));
+      } else {
+        var input = document.createElement('input');
+        input.type = 'text';
+        td3.appendChild(input);
+      }
       tr.appendChild(td3);
     }
     mar.appendChild(tr);
@@ -96,6 +101,9 @@ function check() {
   var tracking_items = [];
   for (var i = 0; i < mar_rows.length; i++) {
     var row = mar_rows[i];
+    if (row.static) {
+      continue;
+    }
     var dom_row = document.getElementsByTagName('tr')[i + 1];
     var cell_dose = dom_row.children[2];
     var cell_administered = dom_row.children[3];
@@ -229,7 +237,7 @@ module.exports.FastClick=e):window.FastClick=e})();
     <th>Order</th>
     <th>Sch. Time</th>
     <th>Dose</th>
-    <th id="the-administered-header">Administered</th>
+    <th id="the-administered-header">Given</th>
   </tr>
 </table>
 <p><button type="button" onclick="submit();">Submit</button></p>
