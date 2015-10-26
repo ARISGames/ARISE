@@ -41,6 +41,13 @@ while (true) {
 
 var administer_mode = lookupGET('administer_mode') === 'true';
 
+var name      = lookupGET('name'     ) || '';
+var dob       = lookupGET('dob'      ) || '';
+var weight    = lookupGET('weight'   ) || '';
+var mr        = lookupGET('mr'       ) || '';
+var provider  = lookupGET('provider' ) || '';
+var allergies = lookupGET('allergies') || '';
+
 /* end of parameters */
 
 var ARIS = {};
@@ -95,6 +102,13 @@ function appReady() {
   if (!administer_mode) {
     document.getElementById('the-administered-header').remove();
   }
+
+  document.getElementById('the-name'     ).textContent = name;
+  document.getElementById('the-dob'      ).textContent = dob;
+  document.getElementById('the-weight'   ).textContent = weight;
+  document.getElementById('the-mr'       ).textContent = mr;
+  document.getElementById('the-provider' ).textContent = provider;
+  document.getElementById('the-allergies').textContent = allergies;
 }
 
 function check() {
@@ -231,6 +245,15 @@ module.exports.FastClick=e):window.FastClick=e})();
 </script>
 </head>
 <body>
+
+<p>
+Patient Name: <span id="the-name"></span> <br />
+DOB: <span id="the-dob"></span> &nbsp;&nbsp;&nbsp;
+Weight (kg): <span id="the-weight"></span> <br />
+MR#: <span id="the-mr"></span> <br />
+Provider: <span id="the-provider"></span> <br />
+Allergies: <span id="the-allergies"></span>
+</p>
 
 <table id="the-mar">
   <tr>

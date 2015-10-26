@@ -99,5 +99,11 @@ object on the map.
           &row2static=true # not a user-filled row; just read-only info
           # continue rows as necessary
           &administer_mode=false # set to true if player should administer instead of calculate dosages
+          &name=John%20Joe
+          &dob=01-02-1993
+          &weight=100
+          &mr=1234
+          &provider=Medicorp
+          &allergies=Clocks%2C%20hamsters
 
   [See here](http://meyerweb.com/eric/tools/dencoder/) for the proper way to encode the message text (for example using `%20` instead of a space).
