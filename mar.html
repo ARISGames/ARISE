@@ -48,6 +48,12 @@ function float_equal(a, b) {
   return Math.abs(a - b) < 0.0001;
 }
 
+function createHTMLNode(html) {
+  var div = document.createElement('div');
+  div.innerHTML = html;
+  return div;
+}
+
 function appReady() {
   FastClick.attach(document.body);
   var mar = document.getElementById('the-mar');
@@ -56,14 +62,14 @@ function appReady() {
     var tr = document.createElement('tr');
     tr.classList.add(i % 2 === 0 ? 'row-even' : 'row-odd');
     var td1 = document.createElement('td');
-    td1.appendChild(document.createTextNode(row.order));
+    td1.appendChild(createHTMLNode(row.order));
     tr.appendChild(td1);
     var td2 = document.createElement('td');
-    td2.appendChild(document.createTextNode(row.time));
+    td2.appendChild(createHTMLNode(row.time));
     tr.appendChild(td2);
     if (administer_mode) {
       var td3 = document.createElement('td');
-      td3.appendChild(document.createTextNode(row.dose));
+      td3.appendChild(createHTMLNode(row.dose));
       tr.appendChild(td3);
       var td4 = document.createElement('td');
       if (ARIS.cache.getPlayerItemCount(row.item_id) > 0) {
